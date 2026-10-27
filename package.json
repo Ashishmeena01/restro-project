@@ -1,0 +1,45 @@
+{
+  "name": "vradavan-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:generate": "prisma generate --schema=prisma/schema.prisma",
+    "db:push": "prisma db push --schema=prisma/schema.prisma",
+    "db:sqlite:push": "prisma db push --schema=prisma/schema.sqlite.prisma",
+    "db:seed": "node prisma/seed.js"
+  },
+  "dependencies": {
+    "next": "16.4.3",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "@prisma/client": "^5.22.0",
+    "bcryptjs": "^2.4.3",
+    "clsx": "^2.1.1",
+    "jose": "^5.9.6",
+    "jspdf": "^2.5.2",
+    "lucide-react": "^1.16.0",
+    "qrcode": "^1.5.4",
+    "razorpay": "^2.9.5",
+    "react-hook-form": "^7.54.2",
+    "recharts": "^2.15.1",
+    "tailwind-merge": "^3.0.2",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "^4",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20",
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.3",
+    "prisma": "^5.22.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
