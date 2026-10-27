@@ -1,0 +1,223 @@
+@import "tailwindcss";
+
+/* Site-wide black & white palette — remaps every accent color. */
+@theme {
+  --color-emerald-50: #fafafa;
+  --color-emerald-100: #f4f4f5;
+  --color-emerald-200: #e4e4e7;
+  --color-emerald-300: #d4d4d8;
+  --color-emerald-400: #a1a1aa;
+  --color-emerald-500: #71717a;
+  --color-emerald-600: #18181b;
+  --color-emerald-700: #111111;
+  --color-emerald-800: #0a0a0a;
+  --color-emerald-900: #000000;
+  --color-emerald-950: #000000;
+
+  --color-rose-50: #fafafa;
+  --color-rose-100: #f4f4f5;
+  --color-rose-200: #e4e4e7;
+  --color-rose-300: #d4d4d8;
+  --color-rose-400: #a1a1aa;
+  --color-rose-500: #52525b;
+  --color-rose-600: #3f3f46;
+  --color-rose-700: #27272a;
+  --color-rose-800: #18181b;
+  --color-rose-900: #000000;
+
+  --color-amber-50: #fafafa;
+  --color-amber-100: #f4f4f5;
+  --color-amber-200: #e4e4e7;
+  --color-amber-300: #d4d4d8;
+  --color-amber-500: #71717a;
+  --color-amber-600: #3f3f46;
+  --color-amber-700: #27272a;
+  --color-amber-800: #18181b;
+  --color-amber-900: #000000;
+
+  --color-blue-50: #fafafa;
+  --color-blue-600: #18181b;
+
+  --color-purple-50: #fafafa;
+  --color-purple-100: #f4f4f5;
+  --color-purple-200: #e4e4e7;
+  --color-purple-600: #18181b;
+  --color-purple-700: #111111;
+  --color-purple-800: #000000;
+
+  --color-slate-50: #fafafa;
+  --color-slate-100: #f4f4f5;
+  --color-slate-200: #e4e4e7;
+  --color-slate-300: #d4d4d8;
+  --color-slate-400: #a1a1aa;
+  --color-slate-500: #71717a;
+  --color-slate-600: #52525b;
+  --color-slate-700: #3f3f46;
+  --color-slate-800: #27272a;
+  --color-slate-900: #18181b;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  --primary: #000000;
+  --primary-hover: #27272a;
+  --accent: #52525b;
+  --neon-violet: #7c3aed;
+  --neon-lime: #c4ff52;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Quick, low-key feedback for checkout controls. */
+.checkout-panel {
+  transition: border-color 180ms ease, box-shadow 220ms ease, transform 220ms ease;
+}
+
+.checkout-panel:hover {
+  border-color: #d4c5ff;
+  box-shadow: 0 12px 32px -24px rgb(124 58 237 / 35%);
+}
+
+.payment-method-card {
+  position: relative;
+  isolation: isolate;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 220ms ease, background-color 180ms ease;
+}
+
+.payment-method-card:hover {
+  transform: translateY(-2px);
+  border-color: #a78bfa;
+  box-shadow: 0 8px 24px -18px rgb(124 58 237 / 50%);
+}
+
+.payment-method-card:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.payment-method-card[data-selected="true"] {
+  border-color: var(--neon-violet);
+  box-shadow: 0 0 0 1px rgb(124 58 237 / 18%), 0 10px 28px -18px rgb(124 58 237 / 55%);
+  animation: selected-glow 2.8s ease-in-out infinite;
+}
+
+.payment-method-card[data-selected="true"]::after {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(115deg, transparent 20%, rgb(255 255 255 / 50%) 48%, transparent 74%);
+  content: "";
+  opacity: 0;
+  transform: translateX(-100%);
+  animation: selected-sheen 700ms ease-out both;
+  pointer-events: none;
+}
+
+.payment-input {
+  transition: border-color 160ms ease, box-shadow 180ms ease, background-color 160ms ease;
+}
+
+.payment-input:focus-visible {
+  border-color: var(--neon-violet);
+  box-shadow: 0 0 0 3px rgb(124 58 237 / 14%), 0 0 14px rgb(124 58 237 / 10%);
+}
+
+.neon-checkout-button {
+  position: relative;
+  overflow: hidden;
+  transition: transform 180ms ease, box-shadow 220ms ease, background-color 180ms ease;
+}
+
+.neon-checkout-button:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px -12px rgb(124 58 237 / 45%), 0 0 0 1px rgb(196 255 82 / 28%);
+}
+
+.neon-checkout-button:not(:disabled):active {
+  transform: translateY(0) scale(0.99);
+}
+
+.neon-checkout-button:not(:disabled)::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 25%, rgb(255 255 255 / 24%) 50%, transparent 75%);
+  content: "";
+  transform: translateX(-120%);
+  transition: transform 650ms ease;
+}
+
+.neon-checkout-button:not(:disabled):hover::after {
+  transform: translateX(120%);
+}
+
+.payment-ledger-row {
+  transition: background-color 160ms ease, box-shadow 160ms ease;
+}
+
+.payment-ledger-row:hover {
+  background-color: #faf8ff;
+  box-shadow: inset 3px 0 0 var(--neon-violet);
+}
+
+@keyframes selected-glow {
+  0%, 100% { box-shadow: 0 0 0 1px rgb(124 58 237 / 14%), 0 8px 22px -18px rgb(124 58 237 / 38%); }
+  50% { box-shadow: 0 0 0 1px rgb(124 58 237 / 28%), 0 10px 28px -16px rgb(124 58 237 / 58%); }
+}
+
+@keyframes selected-sheen {
+  0% { opacity: 0; transform: translateX(-100%); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Receipt print styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-receipt, #printable-receipt * {
+    visibility: visible;
+  }
+  #printable-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 16px;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
