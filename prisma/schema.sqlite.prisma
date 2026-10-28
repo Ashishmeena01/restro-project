@@ -1,0 +1,280 @@
+// Prisma schema for Vrindavan QR Platform (SQLite configuration for zero-setup local dev & tests)
+// Identical models to prisma/schema.prisma (PostgreSQL production schema)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// 1. User & Staff Management with RBAC
+model User {
+  id           String    @id @default(cuid())
+  businessId   String
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         String    @default("STAFF") // "ADMIN" | "STAFF"
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  business     Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([businessId])
+  @@index([email])
+}
+
+// 2. Business Entity (Multi-tenant ready)
+model Business {
+  id             String            @id @default(cuid())
+  name           String
+  slug           String            @unique
+  tagline        String?
+  logoUrl        String?
+  address        String
+  phone          String
+  email          String
+  currency       String            @default("INR")
+  currencySymbol String            @default("₹")
+  timezone       String            @default("Asia/Kolkata")
+  openingHours   String            @default("09:00 AM - 10:00 PM")
+  taxRatePercent Int               @default(5) // 5% GST
+  fssaiNumber    String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  users          User[]
+  categories     Category[]
+  products       Product[]
+  tables         RestaurantTable[]
+  qrCodes        QrCode[]
+  orders         Order[]
+  payments       Payment[]
+  receipts       Receipt[]
+  refunds        Refund[]
+  settings       BusinessSettings?
+
+  @@index([slug])
+}
+
+// 3. Business Settings & Integrations
+model BusinessSettings {
+  id                String    @id @default(cuid())
+  businessId        String    @unique
+  upiId             String?   // e.g. "business@okaxis"
+  razorpayKeyId     String?
+  razorpayKeySecret String?
+  enableCash        Boolean   @default(true)
+  enableOnline      Boolean   @default(true)
+  defaultGstPercent Int       @default(5)
+  receiptFooter     String?   @default("Thank you for dining with us! Please visit again.")
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  business          Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+}
+
+// 4. Product Categories
+model Category {
+  id          String    @id @default(cuid())
+  businessId  String
+  name        String
+  slug        String
+  description String?
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  business    Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  products    Product[]
+
+  @@unique([businessId, slug])
+  @@index([businessId, sortOrder])
+}
+
+// 5. Products & Items (Prices in integer paise: ₹15 = 1500)
+model Product {
+  id          String      @id @default(cuid())
+  businessId  String
+  categoryId  String
+  name        String
+  description String?
+  imageUrl    String?
+  price       Int         // Integer paise
+  isVeg       Boolean     @default(true)
+  isAvailable Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  business    Business    @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  orderItems  OrderItem[]
+
+  @@index([businessId, categoryId])
+  @@index([businessId, isAvailable])
+}
+
+// 6. Restaurant Tables
+model RestaurantTable {
+  id          String    @id @default(cuid())
+  businessId  String
+  tableNumber String    // e.g. "T-01", "Table 1"
+  capacity    Int       @default(4)
+  qrCodeUrl   String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  business    Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  orders      Order[]
+  qrCodes     QrCode[]
+
+  @@unique([businessId, tableNumber])
+  @@index([businessId])
+}
+
+// 7. QR Codes (General Menu or Table-specific)
+model QrCode {
+  id          String           @id @default(cuid())
+  businessId  String
+  tableId     String?
+  codeType    String           @default("GENERAL") // "GENERAL" | "TABLE"
+  codeUrl     String
+  qrImageUrl  String?          // Data URL or generated SVG
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  business    Business         @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  table       RestaurantTable? @relation(fields: [tableId], references: [id], onDelete: SetNull)
+
+  @@index([businessId])
+  @@index([tableId])
+}
+
+// 8. Orders with Full Snapshot Auditing
+model Order {
+  id            String        @id @default(cuid())
+  businessId    String
+  orderNumber   String        @unique // e.g. "ORD-20261031-001"
+  tableId       String?
+  customerName  String?
+  customerPhone String?
+  subtotal      Int           // In paise
+  tax           Int           // In paise (e.g. 5% GST)
+  discount      Int           @default(0) // In paise
+  total         Int           // In paise
+  orderStatus   String        @default("PENDING_PAYMENT") // "PENDING_PAYMENT" | "CONFIRMED" | "PREPARING" | "READY" | "COMPLETED" | "CANCELLED"
+  paymentStatus String        @default("PENDING") // "PENDING" | "SUCCESS" | "FAILED" | "REFUNDED"
+  paymentMethod String        @default("ONLINE_RAZORPAY") // "ONLINE_RAZORPAY" | "CASH"
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  business      Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  table         RestaurantTable? @relation(fields: [tableId], references: [id], onDelete: SetNull)
+  items         OrderItem[]
+  payment       Payment?
+  receipt       Receipt?
+  refunds       Refund[]
+
+  @@index([businessId, createdAt])
+  @@index([businessId, orderStatus])
+  @@index([businessId, paymentStatus])
+  @@index([orderNumber])
+}
+
+// 9. Order Items (Preserving Historical Price Snapshots)
+model OrderItem {
+  id         String   @id @default(cuid())
+  orderId    String
+  productId  String?
+  productName String  // Snapshot of product name
+  unitPrice  Int      // Snapshot of unit price in paise
+  quantity   Int
+  totalPrice Int      // unitPrice * quantity in paise
+  notes      String?
+  createdAt  DateTime @default(now())
+
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product    Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+// 10. Payment Transactions & Razorpay Signatures
+model Payment {
+  id                String    @id @default(cuid())
+  businessId        String
+  orderId           String    @unique
+  razorpayOrderId   String?   @unique
+  razorpayPaymentId String?   @unique
+  razorpaySignature String?
+  amount            Int       // In paise
+  currency          String    @default("INR")
+  status            String    @default("PENDING") // "PENDING" | "SUCCESS" | "FAILED" | "REFUNDED"
+  paymentMethod     String    @default("ONLINE_RAZORPAY") // "ONLINE_RAZORPAY" | "CASH"
+  failureReason     String?
+  idempotencyKey    String?   @unique
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  business          Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  order             Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  refunds           Refund[]
+
+  @@index([businessId])
+  @@index([razorpayOrderId])
+  @@index([status])
+}
+
+// 11. Digital Receipts (Immutable Ledger)
+model Receipt {
+  id              String   @id @default(cuid())
+  businessId      String
+  orderId         String   @unique
+  receiptNumber   String   @unique // e.g. "REC-20261031-001"
+  customerName    String?
+  customerPhone   String?
+  subtotal        Int      // In paise
+  tax             Int      // In paise
+  discount        Int      @default(0) // In paise
+  total           Int      // In paise
+  paymentMethod   String
+  transactionRef  String?  // Razorpay Payment ID or Cash receipt ref
+  receiptDataJson String   // Full serialized JSON snapshot
+  createdAt       DateTime @default(now())
+
+  business        Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([businessId, createdAt])
+  @@index([receiptNumber])
+}
+
+// 12. Refunds
+model Refund {
+  id              String   @id @default(cuid())
+  businessId      String
+  paymentId       String
+  orderId         String
+  razorpayRefundId String? @unique
+  amount          Int      // In paise
+  reason          String?
+  status          String   @default("PROCESSED") // "PENDING" | "PROCESSED" | "FAILED"
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  business        Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  payment         Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([businessId])
+  @@index([orderId])
+  @@index([paymentId])
+}
