@@ -28,7 +28,7 @@ interface AdminDashboardClientProps {
       qty: number;
       revenue: number;
     } | null;
-    chartData: Array<{ date: string; revenue: number; orders: number }>;
+    chartData: Array<{ date: string; revenue: number; revenuePaise: number }>;
     recentOrders: Array<{
       id: string;
       orderNumber: string;

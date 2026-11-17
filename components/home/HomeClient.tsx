@@ -20,7 +20,7 @@ import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 interface HomeClientProps {
   business: {
     name: string;
-    tagline: string;
+    tagline: string | null;
     address: string;
     phone: string;
     openingHours: string;
