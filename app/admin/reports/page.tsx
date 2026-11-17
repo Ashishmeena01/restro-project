@@ -4,18 +4,13 @@ import React, { useState, useEffect } from 'react';
 import {
   Calendar,
   Download,
-  IndianRupee,
-  ShoppingBag,
-  RotateCcw,
-  Percent,
-  CheckCircle2,
-  Printer,
-  FileSpreadsheet,
 } from 'lucide-react';
 import { formatPaise } from '@/lib/utils';
 import { jsPDF } from 'jspdf';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function AdminDailyReportsPage() {
+  const { isHindi } = useLanguage();
   const [selectedDate, setSelectedDate] = useState(() => {
     return new Date().toISOString().slice(0, 10);
   });
@@ -89,9 +84,13 @@ export default function AdminDailyReportsPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Daily Sales Reports</h1>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+            {isHindi ? 'दैनिक बिक्री ऑडिट रिपोर्ट (Daily Reports)' : 'Daily Sales Reports'}
+          </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Reconcile daily gross sales, units sold, refunds, and net earnings.
+            {isHindi
+              ? 'दैनिक सकल बिक्री, बेची गई प्लेटें, रिफंड और शुद्ध कमाई का लेखा-जोखा।'
+              : 'Reconcile daily gross sales, units sold, refunds, and net earnings.'}
           </p>
         </div>
 
@@ -102,106 +101,146 @@ export default function AdminDailyReportsPage() {
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="bg-white pl-9 pr-3 py-2 rounded-xl text-xs border border-slate-200 focus:outline-none focus:border-emerald-500 font-semibold text-slate-800 shadow-sm"
+              className="bg-white pl-9 pr-3 py-2 rounded-xl text-xs border border-slate-200 focus:outline-none focus:border-emerald-500 font-semibold text-slate-800 shadow-xs"
             />
           </div>
 
           <button
             onClick={handleDownloadPdf}
             disabled={!report || isLoading}
-            className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
+            className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-xs transition-all disabled:opacity-50 cursor-pointer"
           >
             <Download className="w-4 h-4" />
-            <span>Download PDF Report</span>
+            <span>{isHindi ? 'PDF रिपोर्ट डाउनलोड' : 'Download PDF Report'}</span>
           </button>
         </div>
       </div>
 
       {/* Report Metrics Grid */}
       {isLoading ? (
-        <div className="py-20 text-center text-slate-400 text-xs">Computing daily metrics...</div>
+        <div className="py-20 text-center text-slate-400 text-xs">
+          {isHindi ? 'दैनिक मेट्रिक्स की गणना हो रही है...' : 'Computing daily metrics...'}
+        </div>
       ) : !report ? (
         <div className="bg-white rounded-3xl p-12 text-center border border-slate-200">
-          <p className="text-sm font-semibold text-slate-700">No report available for this date</p>
+          <p className="text-sm font-semibold text-slate-700">
+            {isHindi ? 'इस तारीख के लिए कोई रिपोर्ट उपलब्ध नहीं है' : 'No report available for this date'}
+          </p>
         </div>
       ) : (
         <div className="space-y-6">
           {/* Main Highlights */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
-              <span className="text-xs font-semibold text-slate-500">Gross Sales</span>
+            <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+              <span className="text-xs font-semibold text-slate-500">
+                {isHindi ? 'सकल बिक्री (Gross Sales)' : 'Gross Sales'}
+              </span>
               <p className="text-2xl font-extrabold text-slate-900 mt-2">
                 {formatPaise(report.grossSales)}
               </p>
-              <p className="text-[11px] text-slate-400 mt-1">Before refunds</p>
+              <p className="text-[11px] text-slate-400 mt-1">
+                {isHindi ? 'रिफंड से पहले' : 'Before refunds'}
+              </p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
-              <span className="text-xs font-semibold text-slate-500">Customer Refunds</span>
+            <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+              <span className="text-xs font-semibold text-slate-500">
+                {isHindi ? 'ग्राहक रिफंड (Refunds)' : 'Customer Refunds'}
+              </span>
               <p className="text-2xl font-extrabold text-rose-600 mt-2">
                 {formatPaise(report.refunds)}
               </p>
-              <p className="text-[11px] text-slate-400 mt-1">Deducted from gross</p>
+              <p className="text-[11px] text-slate-400 mt-1">
+                {isHindi ? 'सकल से घटाया गया' : 'Deducted from gross'}
+              </p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-emerald-200 shadow-sm bg-emerald-50/20">
-              <span className="text-xs font-bold text-emerald-800">Net Sales</span>
+            <div className="bg-white p-5 rounded-2xl border border-emerald-200 shadow-xs bg-emerald-50/20">
+              <span className="text-xs font-bold text-emerald-800">
+                {isHindi ? 'शुद्ध बिक्री (Net Sales)' : 'Net Sales'}
+              </span>
               <p className="text-2xl font-extrabold text-emerald-600 mt-2">
                 {formatPaise(report.netSales)}
               </p>
-              <p className="text-[11px] text-emerald-700 font-medium mt-1">Actual realization</p>
+              <p className="text-[11px] text-emerald-700 font-medium mt-1">
+                {isHindi ? 'वास्तविक आय' : 'Actual realization'}
+              </p>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
-              <span className="text-xs font-semibold text-slate-500">Average Order Value</span>
+            <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+              <span className="text-xs font-semibold text-slate-500">
+                {isHindi ? 'औसत आर्डर मूल्य (AOV)' : 'Average Order Value'}
+              </span>
               <p className="text-2xl font-extrabold text-slate-900 mt-2">
                 {formatPaise(report.averageOrderValue)}
               </p>
-              <p className="text-[11px] text-slate-400 mt-1">Per paid customer</p>
+              <p className="text-[11px] text-slate-400 mt-1">
+                {isHindi ? 'प्रति सशुल्क ग्राहक' : 'Per paid customer'}
+              </p>
             </div>
           </div>
 
           {/* Detailed Audit Table */}
-          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 space-y-4">
+          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-6 space-y-4">
             <h2 className="font-bold text-sm text-slate-900">
-              Full Daily Audit Breakdown ({report.date})
+              {isHindi
+                ? `संपूर्ण दैनिक ऑडिट विवरण (${report.date})`
+                : `Full Daily Audit Breakdown (${report.date})`}
             </h2>
 
             <div className="divide-y divide-slate-100 text-xs">
               <div className="py-3 flex justify-between">
-                <span className="text-slate-600">Total Customer Orders Placed</span>
+                <span className="text-slate-600">
+                  {isHindi ? 'कुल प्राप्त ग्राहक आर्डर' : 'Total Customer Orders Placed'}
+                </span>
                 <span className="font-bold text-slate-900">{report.totalOrders}</span>
               </div>
               <div className="py-3 flex justify-between">
-                <span className="text-slate-600">Successful & Paid Orders</span>
+                <span className="text-slate-600">
+                  {isHindi ? 'सफल व सशुल्क आर्डर' : 'Successful & Paid Orders'}
+                </span>
                 <span className="font-bold text-emerald-700">{report.successfulOrders}</span>
               </div>
               <div className="py-3 flex justify-between">
-                <span className="text-slate-600">Pending / In-Kitchen Orders</span>
+                <span className="text-slate-600">
+                  {isHindi ? 'लंबित / किचन में आर्डर' : 'Pending / In-Kitchen Orders'}
+                </span>
                 <span className="font-bold text-amber-600">{report.pendingOrders}</span>
               </div>
               <div className="py-3 flex justify-between">
-                <span className="text-slate-600">Cancelled Orders</span>
+                <span className="text-slate-600">
+                  {isHindi ? 'रद्द किए गए आर्डर' : 'Cancelled Orders'}
+                </span>
                 <span className="font-bold text-rose-600">{report.cancelledOrders}</span>
               </div>
               <div className="py-3 flex justify-between">
-                <span className="text-slate-600">Total Dishes & Units Sold</span>
-                <span className="font-bold text-slate-900">{report.unitsSold} units</span>
+                <span className="text-slate-600">
+                  {isHindi ? 'कुल बेचे गए व्यंजन / प्लेटें' : 'Total Dishes & Units Sold'}
+                </span>
+                <span className="font-bold text-slate-900">
+                  {report.unitsSold} {isHindi ? 'प्लेटें' : 'units'}
+                </span>
               </div>
               <div className="py-3 flex justify-between">
-                <span className="text-slate-600">Gross Sales</span>
+                <span className="text-slate-600">
+                  {isHindi ? 'सकल बिक्री राशि' : 'Gross Sales'}
+                </span>
                 <span className="font-bold text-slate-900">{formatPaise(report.grossSales)}</span>
               </div>
               <div className="py-3 flex justify-between">
-                <span className="text-slate-600">Total Discounts</span>
+                <span className="text-slate-600">
+                  {isHindi ? 'कुल दी गई छूट' : 'Total Discounts'}
+                </span>
                 <span className="font-bold text-slate-900">{formatPaise(report.discounts)}</span>
               </div>
               <div className="py-3 flex justify-between">
-                <span className="text-slate-600">Total Refunds Processed</span>
+                <span className="text-slate-600">
+                  {isHindi ? 'कुल रिफंड' : 'Total Refunds Processed'}
+                </span>
                 <span className="font-bold text-rose-600">-{formatPaise(report.refunds)}</span>
               </div>
               <div className="py-3 flex justify-between font-extrabold text-sm text-slate-900 pt-3 border-t border-slate-200">
-                <span>Net Sales Realized</span>
+                <span>{isHindi ? 'शुद्ध अर्जित बिक्री' : 'Net Sales Realized'}</span>
                 <span className="text-emerald-700">{formatPaise(report.netSales)}</span>
               </div>
             </div>

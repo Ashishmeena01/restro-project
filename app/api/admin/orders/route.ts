@@ -1,7 +1,8 @@
-
 import { NextResponse } from 'next/server';
 import { getAdminOrders } from '@/services/order.service';
 import prisma from '@/lib/db/prisma';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
   try {

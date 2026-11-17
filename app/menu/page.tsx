@@ -3,9 +3,11 @@
 import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Search, ShoppingBag, Plus, Minus, UtensilsCrossed, ArrowRight, Check, Sparkles } from 'lucide-react';
+import { Search, Plus, Minus, UtensilsCrossed, ArrowRight } from 'lucide-react';
 import { useCart } from '@/components/cart/CartContext';
 import { formatPaise } from '@/lib/utils';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 interface ProductItem {
   id: string;
@@ -30,6 +32,7 @@ function MenuContent() {
   const searchParams = useSearchParams();
   const tableParam = searchParams.get('table');
   const { items, addItem, updateQuantity, totalItems, subtotal, tableNumber, setTableNumber } = useCart();
+  const { t, isHindi, translateDish, translateCategory, translateDescription } = useLanguage();
 
   const [categories, setCategories] = useState<CategoryWithProducts[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -63,19 +66,26 @@ function MenuContent() {
     fetchMenu();
   }, []);
 
-  // Filtered products
+  // Filtered products supporting both Hindi & English searches
   const filteredCategories = useMemo(() => {
     return categories
       .map((cat) => {
         let prods = cat.products.filter((p) => p.isAvailable);
 
         if (searchQuery.trim()) {
-          const query = searchQuery.toLowerCase();
-          prods = prods.filter(
-            (p) =>
-              p.name.toLowerCase().includes(query) ||
-              (p.description && p.description.toLowerCase().includes(query))
-          );
+          const query = searchQuery.toLowerCase().trim();
+          prods = prods.filter((p) => {
+            const engName = p.name.toLowerCase();
+            const hindiName = translateDish(p.name).toLowerCase();
+            const engDesc = (p.description || '').toLowerCase();
+            const hindiDesc = translateDescription(p.description).toLowerCase();
+            return (
+              engName.includes(query) ||
+              hindiName.includes(query) ||
+              engDesc.includes(query) ||
+              hindiDesc.includes(query)
+            );
+          });
         }
 
         return {
@@ -87,38 +97,49 @@ function MenuContent() {
         if (selectedCategory !== 'all' && cat.id !== selectedCategory) return false;
         return cat.products.length > 0;
       });
-  }, [categories, selectedCategory, searchQuery]);
+  }, [categories, selectedCategory, searchQuery, translateDish, translateDescription]);
 
   const getItemQuantityInCart = (productId: string) => {
     const item = items.find((i) => i.productId === productId);
     return item ? item.quantity : 0;
   };
 
+  const displayName = isHindi ? t('brand.name') : businessName;
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-28">
       {/* Header Bar */}
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200">
         <div className="max-w-3xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">
-                V
+          <div className="flex items-center justify-between gap-2">
+            <Link href="/" className="flex items-center gap-2 min-w-0">
+              <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shrink-0">
+                व
               </div>
-              <div>
-                <h1 className="font-bold text-sm sm:text-base leading-tight text-slate-900">
-                  {businessName}
+              <div className="min-w-0">
+                <h1 className="font-bold text-xs sm:text-base leading-tight text-slate-900 truncate">
+                  {displayName}
                 </h1>
-                <p className="text-[11px] text-emerald-700 font-medium">Digital Dine-In Menu</p>
+                <p className="text-[10px] sm:text-[11px] text-emerald-700 font-medium">
+                  {t('menu.header_title')}
+                </p>
               </div>
             </Link>
 
-            {/* Table Badge */}
-            {(tableParam || tableNumber) && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
-                <UtensilsCrossed className="w-3.5 h-3.5 text-emerald-600" />
-                <span>{tableParam || tableNumber}</span>
-              </div>
-            )}
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Language Switcher */}
+              <LanguageSwitcher variant="pill" />
+
+              {/* Table Badge */}
+              {(tableParam || tableNumber) && (
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
+                  <UtensilsCrossed className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>
+                    {t('menu.table')} {tableParam || tableNumber}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Search Box */}
@@ -126,10 +147,10 @@ function MenuContent() {
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search samosa, kachori, tea, sweets..."
+              placeholder={t('menu.search_placeholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-100 hover:bg-slate-100/80 focus:bg-white pl-10 pr-4 py-2 rounded-xl text-sm border border-transparent focus:border-emerald-500 focus:outline-none transition-all placeholder:text-slate-400"
+              className="w-full bg-slate-100 hover:bg-slate-100/80 focus:bg-white pl-10 pr-4 py-2 rounded-xl text-xs sm:text-sm border border-transparent focus:border-emerald-500 focus:outline-none transition-all placeholder:text-slate-400"
             />
           </div>
 
@@ -137,25 +158,25 @@ function MenuContent() {
           <div className="mt-3 flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
             <button
               onClick={() => setSelectedCategory('all')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-medium shrink-0 transition-all ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all ${
                 selectedCategory === 'all'
-                  ? 'bg-slate-900 text-white shadow-sm'
+                  ? 'bg-slate-900 text-white shadow-xs'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
-              All Delicacies
+              {t('menu.all_categories')}
             </button>
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-medium shrink-0 transition-all ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all ${
                   selectedCategory === cat.id
-                    ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-200'
+                    ? 'bg-emerald-600 text-white shadow-xs shadow-emerald-200'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
-                {cat.name}
+                {translateCategory(cat.name)}
               </button>
             ))}
           </div>
@@ -167,12 +188,12 @@ function MenuContent() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20 text-slate-400">
             <div className="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mb-3"></div>
-            <p className="text-xs">Preparing fresh menu...</p>
+            <p className="text-xs font-medium">{t('menu.loading')}</p>
           </div>
         ) : filteredCategories.length === 0 ? (
           <div className="bg-white rounded-2xl p-10 text-center border border-slate-200">
-            <p className="text-sm font-semibold text-slate-700">No dishes found</p>
-            <p className="text-xs text-slate-400 mt-1">Try another search or select a different category</p>
+            <p className="text-sm font-semibold text-slate-700">{t('menu.no_dishes')}</p>
+            <p className="text-xs text-slate-400 mt-1">{t('menu.try_another')}</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -180,7 +201,7 @@ function MenuContent() {
               <section key={cat.id} className="space-y-3">
                 <div className="border-b border-slate-200/80 pb-2">
                   <h2 className="font-bold text-base text-slate-900 flex items-center gap-2">
-                    <span>{cat.name}</span>
+                    <span>{translateCategory(cat.name)}</span>
                     <span className="text-xs text-slate-400 font-normal">({cat.products.length})</span>
                   </h2>
                   {cat.description && (
@@ -194,55 +215,57 @@ function MenuContent() {
                     return (
                       <div
                         key={product.id}
-                        className="bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-sm flex gap-3 hover:border-emerald-200 transition-all"
+                        className="bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-xs flex gap-3 hover:border-emerald-200 transition-all"
                       >
                         <div className="flex-1 min-w-0 flex flex-col justify-between">
                           <div>
                             <div className="flex items-center justify-between mb-1.5 gap-2">
                               <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-                                Veg
+                                {t('menu.veg')}
                               </span>
                               <span className="font-bold text-base text-slate-900 shrink-0">
                                 {formatPaise(product.price)}
                               </span>
                             </div>
 
-                            <h3 className="font-bold text-slate-900 text-sm sm:text-base">
-                              {product.name}
+                            <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-snug">
+                              {translateDish(product.name)}
                             </h3>
                             {product.description && (
                               <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
-                                {product.description}
+                                {translateDescription(product.description)}
                               </p>
                             )}
                           </div>
 
                           <div className="mt-3 flex items-center justify-between gap-2">
                             <span className="text-[11px] text-slate-400 font-medium">
-                              {cartQty > 0 ? `${cartQty} in cart` : 'Hot & Fresh'}
+                              {cartQty > 0
+                                ? `${cartQty} ${t('menu.in_cart')}`
+                                : t('menu.hot_fresh')}
                             </span>
 
                             {cartQty === 0 ? (
                               <button
                                 onClick={() => addItem(product)}
-                                className="inline-flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-emerald-200 hover:border-emerald-600 transition-all"
+                                className="inline-flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-emerald-200 hover:border-emerald-600 transition-all cursor-pointer"
                               >
                                 <Plus className="w-3.5 h-3.5" />
-                                <span>Add</span>
+                                <span>{t('menu.add_btn')}</span>
                               </button>
                             ) : (
-                              <div className="inline-flex items-center rounded-xl bg-emerald-600 text-white shadow-sm shadow-emerald-200">
+                              <div className="inline-flex items-center rounded-xl bg-emerald-600 text-white shadow-xs shadow-emerald-200">
                                 <button
                                   onClick={() => updateQuantity(product.id, cartQty - 1)}
-                                  className="p-1.5 hover:bg-emerald-700 rounded-l-xl transition-colors"
+                                  className="p-1.5 hover:bg-emerald-700 rounded-l-xl transition-colors cursor-pointer"
                                 >
                                   <Minus className="w-3.5 h-3.5" />
                                 </button>
                                 <span className="px-2.5 text-xs font-bold">{cartQty}</span>
                                 <button
                                   onClick={() => updateQuantity(product.id, cartQty + 1)}
-                                  className="p-1.5 hover:bg-emerald-700 rounded-r-xl transition-colors"
+                                  className="p-1.5 hover:bg-emerald-700 rounded-r-xl transition-colors cursor-pointer"
                                 >
                                   <Plus className="w-3.5 h-3.5" />
                                 </button>
@@ -296,7 +319,7 @@ function MenuContent() {
                 {totalItems}
               </div>
               <div>
-                <p className="text-xs text-slate-300">Total payable</p>
+                <p className="text-xs text-slate-300">{t('menu.total_payable')}</p>
                 <p className="font-bold text-base leading-tight text-white">
                   {formatPaise(subtotal + Math.round((subtotal * 5) / 100))}
                 </p>
@@ -304,7 +327,7 @@ function MenuContent() {
             </div>
 
             <div className="flex items-center gap-2 text-emerald-400 font-semibold text-sm">
-              <span>View Cart</span>
+              <span>{t('menu.view_cart')}</span>
               <ArrowRight className="w-4 h-4" />
             </div>
           </Link>

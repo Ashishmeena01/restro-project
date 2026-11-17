@@ -1,23 +1,21 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Plus,
   Search,
-  Filter,
   Edit2,
   Trash2,
   Check,
   X,
   AlertCircle,
   UtensilsCrossed,
-  ToggleLeft,
-  ToggleRight,
-  IndianRupee,
 } from 'lucide-react';
 import { formatPaise, rupeesToPaise } from '@/lib/utils';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function AdminProductsPage() {
+  const { isHindi, translateDish, translateCategory } = useLanguage();
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -112,7 +110,10 @@ export default function AdminProductsPage() {
   };
 
   const handleDelete = async (productId: string) => {
-    if (!confirm('Are you sure you want to delete this product? Historical orders will remain preserved.')) {
+    const confirmMsg = isHindi
+      ? 'क्या आप वाकई इस व्यंजन को हटाना चाहते हैं? पिछले आर्डर का रिकॉर्ड सुरक्षित रहेगा।'
+      : 'Are you sure you want to delete this product? Historical orders will remain preserved.';
+    if (!confirm(confirmMsg)) {
       return;
     }
 
@@ -134,7 +135,11 @@ export default function AdminProductsPage() {
 
     const priceRupeesNum = parseFloat(formPriceRupees);
     if (isNaN(priceRupeesNum) || priceRupeesNum <= 0) {
-      setFormError('Please enter a valid price in Rupees (e.g. 15 for ₹15).');
+      setFormError(
+        isHindi
+          ? 'कृपया रुपये में वैध मूल्य दर्ज करें (उदा. ₹15 के लिए 15)।'
+          : 'Please enter a valid price in Rupees (e.g. 15 for ₹15).'
+      );
       return;
     }
 
@@ -152,67 +157,92 @@ export default function AdminProductsPage() {
         isAvailable: formIsAvailable,
       };
 
-      const url = editingProduct
-        ? `/api/admin/products/${editingProduct.id}`
-        : '/api/admin/products';
-      const method = editingProduct ? 'PATCH' : 'POST';
-
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to save product');
+      if (editingProduct) {
+        // Edit existing
+        const res = await fetch(`/api/admin/products/${editingProduct.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Failed to update product');
+        }
+        setProducts((prev) =>
+          prev.map((p) => (p.id === editingProduct.id ? data.product : p))
+        );
+      } else {
+        // Create new
+        const res = await fetch('/api/admin/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Failed to create product');
+        }
+        setProducts((prev) => [data.product, ...prev]);
       }
 
       setIsModalOpen(false);
-      fetchData();
     } catch (err: any) {
-      setFormError(err.message || 'Error saving product');
+      setFormError(err.message || 'Operation failed');
     } finally {
       setIsSaving(false);
     }
   };
 
-  const filteredProducts = products.filter((p) => {
-    if (selectedCategory !== 'all' && p.categoryId !== selectedCategory) return false;
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      return p.name.toLowerCase().includes(q) || (p.description && p.description.toLowerCase().includes(q));
-    }
-    return true;
-  });
+  const filteredProducts = useMemo(() => {
+    return products.filter((p) => {
+      const matchesCategory =
+        selectedCategory === 'all' || p.categoryId === selectedCategory;
+
+      if (!matchesCategory) return false;
+
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const engName = p.name.toLowerCase();
+        const hiName = translateDish(p.name).toLowerCase();
+        const desc = (p.description || '').toLowerCase();
+        return engName.includes(q) || hiName.includes(q) || desc.includes(q);
+      }
+
+      return true;
+    });
+  }, [products, selectedCategory, searchQuery, translateDish]);
 
   return (
     <div className="space-y-6">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Product Management</h1>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+            {isHindi ? 'व्यंजन प्रबंधन (Menu Items)' : 'Product Management'}
+          </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Create, update pricing, upload images, and control instant menu availability.
+            {isHindi
+              ? 'व्यंजन जोड़ें, मूल्य अपडेट करें, फ़ोटो बदलें और तुरंत उपलब्धता नियंत्रित करें।'
+              : 'Create, update pricing, upload images, and control instant menu availability.'}
           </p>
         </div>
 
         <button
           onClick={openCreateModal}
-          className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition-all cursor-pointer"
+          className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-xs transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          <span>Add New Product</span>
+          <span>{isHindi ? 'नया व्यंजन जोड़ें' : 'Add New Product'}</span>
         </button>
       </div>
 
       {/* Filters Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row gap-3">
+      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row gap-3">
         <div className="flex-1 relative">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search products by name or description..."
+            placeholder={isHindi ? 'व्यंजन के नाम या विवरण से खोजें...' : 'Search products by name or description...'}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-slate-50 pl-10 pr-4 py-2 rounded-xl text-xs border border-slate-200 focus:outline-none focus:border-emerald-500"
@@ -225,10 +255,10 @@ export default function AdminProductsPage() {
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="w-full sm:w-auto bg-slate-50 px-3 py-2 rounded-xl text-xs border border-slate-200 focus:outline-none focus:border-emerald-500 text-slate-700"
           >
-            <option value="all">All Categories</option>
+            <option value="all">{isHindi ? 'सभी श्रेणियाँ' : 'All Categories'}</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
-                {c.name}
+                {translateCategory(c.name)}
               </option>
             ))}
           </select>
@@ -237,25 +267,31 @@ export default function AdminProductsPage() {
 
       {/* Products Table */}
       {isLoading ? (
-        <div className="py-20 text-center text-slate-400 text-xs">Loading products...</div>
+        <div className="py-20 text-center text-slate-400 text-xs">
+          {isHindi ? 'व्यंजन लोड हो रहे हैं...' : 'Loading products...'}
+        </div>
       ) : filteredProducts.length === 0 ? (
         <div className="bg-white rounded-3xl p-12 text-center border border-slate-200">
           <UtensilsCrossed className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-          <p className="font-bold text-sm text-slate-800">No dishes match your filter</p>
-          <p className="text-xs text-slate-400 mt-1">Try another search or click Add New Product</p>
+          <p className="font-bold text-sm text-slate-800">
+            {isHindi ? 'कोई व्यंजन नहीं मिला' : 'No dishes match your filter'}
+          </p>
+          <p className="text-xs text-slate-400 mt-1">
+            {isHindi ? 'अन्य खोज प्रयास करें या नया व्यंजन जोड़ें' : 'Try another search or click Add New Product'}
+          </p>
         </div>
       ) : (
-        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-100">
                 <tr>
-                  <th className="px-5 py-3">Product Name</th>
-                  <th className="px-5 py-3">Category</th>
-                  <th className="px-5 py-3">Price</th>
-                  <th className="px-5 py-3">Dietary</th>
-                  <th className="px-5 py-3">Instant Availability</th>
-                  <th className="px-5 py-3 text-right">Actions</th>
+                  <th className="px-5 py-3">{isHindi ? 'व्यंजन का नाम' : 'Product Name'}</th>
+                  <th className="px-5 py-3">{isHindi ? 'श्रेणी' : 'Category'}</th>
+                  <th className="px-5 py-3">{isHindi ? 'मूल्य' : 'Price'}</th>
+                  <th className="px-5 py-3">{isHindi ? 'प्रकार' : 'Dietary'}</th>
+                  <th className="px-5 py-3">{isHindi ? 'उपलब्धता' : 'Instant Availability'}</th>
+                  <th className="px-5 py-3 text-right">{isHindi ? 'क्रियाएं' : 'Actions'}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-700">
@@ -278,7 +314,9 @@ export default function AdminProductsPage() {
                           )}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-bold text-slate-900 text-sm">{prod.name}</p>
+                          <p className="font-bold text-slate-900 text-sm">
+                            {translateDish(prod.name)}
+                          </p>
                           {prod.description && (
                             <p className="text-slate-400 line-clamp-1 text-[11px] max-w-xs">{prod.description}</p>
                           )}
@@ -287,7 +325,7 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-5 py-3.5">
                       <span className="font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-md text-[11px]">
-                        {prod.category?.name || 'Unassigned'}
+                        {translateCategory(prod.category?.name || 'Unassigned')}
                       </span>
                     </td>
                     <td className="px-5 py-3.5 font-bold text-emerald-700 text-sm">
@@ -296,7 +334,7 @@ export default function AdminProductsPage() {
                     <td className="px-5 py-3.5">
                       <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-                        Pure Veg
+                        {isHindi ? '100% शाकाहारी' : 'Pure Veg'}
                       </span>
                     </td>
                     <td className="px-5 py-3.5">
@@ -311,12 +349,12 @@ export default function AdminProductsPage() {
                         {prod.isAvailable ? (
                           <>
                             <Check className="w-3.5 h-3.5 text-emerald-600" />
-                            <span>Available</span>
+                            <span>{isHindi ? 'उपलब्ध' : 'Available'}</span>
                           </>
                         ) : (
                           <>
                             <X className="w-3.5 h-3.5 text-rose-600" />
-                            <span>Sold Out</span>
+                            <span>{isHindi ? 'समाप्त (Sold Out)' : 'Sold Out'}</span>
                           </>
                         )}
                       </button>
@@ -324,14 +362,14 @@ export default function AdminProductsPage() {
                     <td className="px-5 py-3.5 text-right space-x-2">
                       <button
                         onClick={() => openEditModal(prod)}
-                        className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-600 hover:text-slate-900 transition-colors"
+                        className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
                         title="Edit product"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDelete(prod.id)}
-                        className="p-1.5 hover:bg-rose-50 rounded-lg text-slate-400 hover:text-rose-600 transition-colors"
+                        className="p-1.5 hover:bg-rose-50 rounded-lg text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
                         title="Delete product"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -351,11 +389,17 @@ export default function AdminProductsPage() {
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h2 className="font-bold text-base text-slate-900">
-                {editingProduct ? 'Edit Product' : 'Add New Dish'}
+                {editingProduct
+                  ? isHindi
+                    ? 'व्यंजन संपादित करें'
+                    : 'Edit Product'
+                  : isHindi
+                  ? 'नया व्यंजन जोड़ें'
+                  : 'Add New Dish'}
               </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg"
+                className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -371,14 +415,14 @@ export default function AdminProductsPage() {
             <form onSubmit={handleFormSubmit} className="space-y-4 text-xs">
               <div>
                 <label className="block font-semibold text-slate-700 mb-1">
-                  Product Name *
+                  {isHindi ? 'व्यंजन का नाम *' : 'Product Name *'}
                 </label>
                 <input
                   type="text"
                   required
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  placeholder="e.g. Samosa, Kachori, Tea, Poha"
+                  placeholder={isHindi ? 'उदा. समोसा, कचौरी, चाय, पोहा' : 'e.g. Samosa, Kachori, Tea, Poha'}
                   className="w-full bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500 font-medium"
                 />
               </div>
@@ -386,7 +430,7 @@ export default function AdminProductsPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-slate-700 mb-1">
-                    Category *
+                    {isHindi ? 'श्रेणी *' : 'Category *'}
                   </label>
                   <select
                     required
@@ -396,7 +440,7 @@ export default function AdminProductsPage() {
                   >
                     {categories.map((c) => (
                       <option key={c.id} value={c.id}>
-                        {c.name}
+                        {translateCategory(c.name)}
                       </option>
                     ))}
                   </select>
@@ -404,7 +448,7 @@ export default function AdminProductsPage() {
 
                 <div>
                   <label className="block font-semibold text-slate-700 mb-1">
-                    Price in Indian Rupees (₹) *
+                    {isHindi ? 'मूल्य (रुपये में ₹) *' : 'Price in Indian Rupees (₹) *'}
                   </label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-slate-400">₹</span>
@@ -418,26 +462,28 @@ export default function AdminProductsPage() {
                       className="w-full bg-slate-50 pl-7 pr-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500 font-bold text-slate-900"
                     />
                   </div>
-                  <p className="text-[10px] text-slate-400 mt-0.5">Stored as integer paise</p>
+                  <p className="text-[10px] text-slate-400 mt-0.5">
+                    {isHindi ? 'डेटाबेस में पैसे के रूप में सुरक्षित' : 'Stored as integer paise'}
+                  </p>
                 </div>
               </div>
 
               <div>
                 <label className="block font-semibold text-slate-700 mb-1">
-                  Description
+                  {isHindi ? 'विवरण (Description)' : 'Description'}
                 </label>
                 <textarea
                   rows={2}
                   value={formDescription}
                   onChange={(e) => setFormDescription(e.target.value)}
-                  placeholder="Fresh ingredients, spices, and preparation notes..."
+                  placeholder={isHindi ? 'सामग्री, मसाले और विशेषता...' : 'Fresh ingredients, spices, and preparation notes...'}
                   className="w-full bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
               <div>
                 <label className="block font-semibold text-slate-700 mb-1">
-                  Image URL (Optional)
+                  {isHindi ? 'फ़ोटो URL (वैकल्पिक)' : 'Image URL (Optional)'}
                 </label>
                 <input
                   type="url"
@@ -456,7 +502,9 @@ export default function AdminProductsPage() {
                     onChange={(e) => setFormIsVeg(e.target.checked)}
                     className="rounded text-emerald-600 focus:ring-emerald-500"
                   />
-                  <span className="font-semibold text-slate-700">100% Pure Vegetarian</span>
+                  <span className="font-semibold text-slate-700">
+                    {isHindi ? '100% शुद्ध शाकाहारी' : '100% Pure Vegetarian'}
+                  </span>
                 </label>
 
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -466,7 +514,9 @@ export default function AdminProductsPage() {
                     onChange={(e) => setFormIsAvailable(e.target.checked)}
                     className="rounded text-emerald-600 focus:ring-emerald-500"
                   />
-                  <span className="font-semibold text-slate-700">Available on Live Menu</span>
+                  <span className="font-semibold text-slate-700">
+                    {isHindi ? 'लाइव मेनू में उपलब्ध' : 'Available on Live Menu'}
+                  </span>
                 </label>
               </div>
 
@@ -476,14 +526,24 @@ export default function AdminProductsPage() {
                   onClick={() => setIsModalOpen(false)}
                   className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-medium cursor-pointer"
                 >
-                  Cancel
+                  {isHindi ? 'रद्द करें' : 'Cancel'}
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-xl font-bold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-xl font-bold shadow-xs transition-all disabled:opacity-50 cursor-pointer"
                 >
-                  {isSaving ? 'Saving...' : editingProduct ? 'Save Changes' : 'Create Dish'}
+                  {isSaving
+                    ? isHindi
+                      ? 'सहेजा जा रहा है...'
+                      : 'Saving...'
+                    : editingProduct
+                    ? isHindi
+                      ? 'परिवर्तन सहेजें'
+                      : 'Save Changes'
+                    : isHindi
+                    ? 'व्यंजन बनाएं'
+                    : 'Create Dish'}
                 </button>
               </div>
             </form>

@@ -3,18 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import {
   TrendingUp,
-  Award,
-  IndianRupee,
-  Calendar,
-  Filter,
   Flame,
-  ArrowUpDown,
   UtensilsCrossed,
-  Sparkles,
 } from 'lucide-react';
 import { formatPaise } from '@/lib/utils';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function AdminBestSellersPage() {
+  const { isHindi, translateDish, translateCategory } = useLanguage();
   const now = new Date();
   const [selectedYear, setSelectedYear] = useState(now.getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(now.getMonth() + 1); // 1-12
@@ -25,18 +21,18 @@ export default function AdminBestSellersPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   const months = [
-    { num: 1, name: 'January' },
-    { num: 2, name: 'February' },
-    { num: 3, name: 'March' },
-    { num: 4, name: 'April' },
-    { num: 5, name: 'May' },
-    { num: 6, name: 'June' },
-    { num: 7, name: 'July' },
-    { num: 8, name: 'August' },
-    { num: 9, name: 'September' },
-    { num: 10, name: 'October' },
-    { num: 11, name: 'November' },
-    { num: 12, name: 'December' },
+    { num: 1, name: isHindi ? 'जनवरी' : 'January' },
+    { num: 2, name: isHindi ? 'फ़रवरी' : 'February' },
+    { num: 3, name: isHindi ? 'मार्च' : 'March' },
+    { num: 4, name: isHindi ? 'अप्रैल' : 'April' },
+    { num: 5, name: isHindi ? 'मई' : 'May' },
+    { num: 6, name: isHindi ? 'जून' : 'June' },
+    { num: 7, name: isHindi ? 'जुलाई' : 'July' },
+    { num: 8, name: isHindi ? 'अगस्त' : 'August' },
+    { num: 9, name: isHindi ? 'सितंबर' : 'September' },
+    { num: 10, name: isHindi ? 'अक्टूबर' : 'October' },
+    { num: 11, name: isHindi ? 'नवंबर' : 'November' },
+    { num: 12, name: isHindi ? 'दिसंबर' : 'December' },
   ];
 
   const years = [2026, 2025, 2024];
@@ -81,9 +77,13 @@ export default function AdminBestSellersPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Best-Selling Products</h1>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+            {isHindi ? 'सर्वाधिक बिकने वाले व्यंजन (Best Sellers)' : 'Best-Selling Products'}
+          </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Monthly product performance rankings: volume vs. gross sales revenue (accounting for refund deductions).
+            {isHindi
+              ? 'मासिक व्यंजन प्रदर्शन रैंकिंग: बिक्री की मात्रा बनाम सकल बिक्री राजस्व।'
+              : 'Monthly product performance rankings: volume vs. gross sales revenue (accounting for refund deductions).'}
           </p>
         </div>
 
@@ -93,7 +93,7 @@ export default function AdminBestSellersPage() {
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(Number(e.target.value))}
-            className="bg-white px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 focus:outline-none focus:border-emerald-500 text-slate-800 shadow-sm"
+            className="bg-white px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 focus:outline-none focus:border-emerald-500 text-slate-800 shadow-xs"
           >
             {months.map((m) => (
               <option key={m.num} value={m.num}>
@@ -106,7 +106,7 @@ export default function AdminBestSellersPage() {
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(Number(e.target.value))}
-            className="bg-white px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 focus:outline-none focus:border-emerald-500 text-slate-800 shadow-sm"
+            className="bg-white px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 focus:outline-none focus:border-emerald-500 text-slate-800 shadow-xs"
           >
             {years.map((y) => (
               <option key={y} value={y}>
@@ -123,7 +123,7 @@ export default function AdminBestSellersPage() {
                 limit === 5 ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900'
               }`}
             >
-              Top 5
+              {isHindi ? 'शीर्ष 5' : 'Top 5'}
             </button>
             <button
               onClick={() => setLimit(10)}
@@ -131,7 +131,7 @@ export default function AdminBestSellersPage() {
                 limit === 10 ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900'
               }`}
             >
-              Top 10
+              {isHindi ? 'शीर्ष 10' : 'Top 10'}
             </button>
           </div>
         </div>
@@ -141,24 +141,22 @@ export default function AdminBestSellersPage() {
       {data && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Most Popular Card */}
-          <div className="bg-gradient-to-br from-amber-500/10 to-amber-50/50 p-5 rounded-3xl border border-amber-200/80 shadow-sm flex items-start justify-between">
+          <div className="bg-gradient-to-br from-amber-500/10 to-amber-50/50 p-5 rounded-3xl border border-amber-200/80 shadow-xs flex items-start justify-between">
             <div>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 font-bold text-[11px] mb-3">
                 <Flame className="w-3.5 h-3.5 text-amber-600" />
-                <span>Most Popular Product (By Units)</span>
+                <span>{isHindi ? 'सर्वाधिक लोकप्रिय (मात्रा अनुसार)' : 'Most Popular Product (By Units)'}</span>
               </div>
               <h3 className="text-xl font-extrabold text-slate-900">
-                {data.mostPopular?.productName || 'N/A'}
+                {translateDish(data.mostPopular?.productName || 'N/A')}
               </h3>
               <p className="text-xs text-slate-600 mt-1">
-                Highest customer demand with{' '}
-                <strong className="text-slate-900 font-bold">
-                  {data.mostPopular?.quantitySold || 0} units sold
-                </strong>{' '}
-                this month.
+                {isHindi
+                  ? `इस महीने सबसे अधिक मांग: ${data.mostPopular?.quantitySold || 0} प्लेटें बिकीं।`
+                  : `Highest customer demand with ${data.mostPopular?.quantitySold || 0} units sold this month.`}
               </p>
               <p className="text-xs text-amber-800 font-semibold mt-2">
-                Revenue: {formatPaise(data.mostPopular?.totalRevenue || 0)}
+                {isHindi ? 'कुल राजस्व:' : 'Revenue:'} {formatPaise(data.mostPopular?.totalRevenue || 0)}
               </p>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-amber-200">
@@ -167,24 +165,22 @@ export default function AdminBestSellersPage() {
           </div>
 
           {/* Highest Revenue Card */}
-          <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-50/50 p-5 rounded-3xl border border-emerald-200/80 shadow-sm flex items-start justify-between">
+          <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-50/50 p-5 rounded-3xl border border-emerald-200/80 shadow-xs flex items-start justify-between">
             <div>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-900 font-bold text-[11px] mb-3">
                 <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Highest Revenue Product (By Gross Sales)</span>
+                <span>{isHindi ? 'सर्वाधिक राजस्व (कमाई अनुसार)' : 'Highest Revenue Product (By Gross Sales)'}</span>
               </div>
               <h3 className="text-xl font-extrabold text-slate-900">
-                {data.highestRevenue?.productName || 'N/A'}
+                {translateDish(data.highestRevenue?.productName || 'N/A')}
               </h3>
               <p className="text-xs text-slate-600 mt-1">
-                Generated top revenue of{' '}
-                <strong className="text-emerald-700 font-bold">
-                  {formatPaise(data.highestRevenue?.totalRevenue || 0)}
-                </strong>{' '}
-                net after refunds.
+                {isHindi
+                  ? `रिफंड के बाद शुद्ध कमाई: ${formatPaise(data.highestRevenue?.totalRevenue || 0)}`
+                  : `Generated top revenue of ${formatPaise(data.highestRevenue?.totalRevenue || 0)} net after refunds.`}
               </p>
               <p className="text-xs text-slate-500 mt-2">
-                Units Sold: {data.highestRevenue?.quantitySold || 0}
+                {isHindi ? 'बेची गई इकाइयाँ:' : 'Units Sold:'} {data.highestRevenue?.quantitySold || 0}
               </p>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-emerald-200">
@@ -195,8 +191,10 @@ export default function AdminBestSellersPage() {
       )}
 
       {/* Sorting Tabs */}
-      <div className="flex items-center justify-between bg-white p-3 rounded-2xl border border-slate-200/80 shadow-sm">
-        <span className="text-xs font-semibold text-slate-500 pl-2">Rank Products By:</span>
+      <div className="flex items-center justify-between bg-white p-3 rounded-2xl border border-slate-200/80 shadow-xs">
+        <span className="text-xs font-semibold text-slate-500 pl-2">
+          {isHindi ? 'रैंक का आधार:' : 'Rank Products By:'}
+        </span>
 
         <div className="flex items-center gap-2">
           <button
@@ -207,7 +205,7 @@ export default function AdminBestSellersPage() {
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            Quantity Sold (Units)
+            {isHindi ? 'बेची गई मात्रा (Units)' : 'Quantity Sold (Units)'}
           </button>
           <button
             onClick={() => setSortBy('revenue')}
@@ -217,28 +215,42 @@ export default function AdminBestSellersPage() {
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            Revenue Generated (₹)
+            {isHindi ? 'कुल अर्जित राजस्व (₹)' : 'Revenue Generated (₹)'}
           </button>
         </div>
       </div>
 
       {/* Best Sellers Ranked List */}
       {isLoading ? (
-        <div className="py-20 text-center text-slate-400 text-xs">Aggregating historical sales...</div>
+        <div className="py-20 text-center text-slate-400 text-xs">
+          {isHindi ? 'बिक्री डेटा का विश्लेषण हो रहा है...' : 'Aggregating historical sales...'}
+        </div>
       ) : !data || data.items.length === 0 ? (
         <div className="bg-white rounded-3xl p-12 text-center border border-slate-200">
           <UtensilsCrossed className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-          <p className="font-bold text-sm text-slate-800">No sales recorded for this month</p>
-          <p className="text-xs text-slate-400 mt-1">Select another month or year</p>
+          <p className="font-bold text-sm text-slate-800">
+            {isHindi ? 'इस महीने के लिए कोई बिक्री दर्ज नहीं है' : 'No sales recorded for this month'}
+          </p>
+          <p className="text-xs text-slate-400 mt-1">
+            {isHindi ? 'कोई दूसरा महीना या वर्ष चुनें' : 'Select another month or year'}
+          </p>
         </div>
       ) : (
-        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 space-y-6">
+        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-6 space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h2 className="font-bold text-sm text-slate-900">
-              Top {limit} Delicacies for {months.find((m) => m.num === selectedMonth)?.name} {selectedYear}
+              {isHindi
+                ? `${months.find((m) => m.num === selectedMonth)?.name} ${selectedYear} के शीर्ष ${limit} पसंदीदा व्यंजन`
+                : `Top ${limit} Delicacies for ${months.find((m) => m.num === selectedMonth)?.name} ${selectedYear}`}
             </h2>
             <span className="text-xs font-medium text-slate-400">
-              Sorted by {sortBy === 'quantity' ? 'Quantity Sold' : 'Net Revenue'}
+              {sortBy === 'quantity'
+                ? isHindi
+                  ? 'मात्रा अनुसार'
+                  : 'Sorted by Quantity Sold'
+                : isHindi
+                ? 'राजस्व अनुसार'
+                : 'Sorted by Net Revenue'}
             </span>
           </div>
 
@@ -255,21 +267,25 @@ export default function AdminBestSellersPage() {
                         {idx + 1}
                       </span>
                       <div>
-                        <span className="font-bold text-slate-900 text-sm">{item.productName}</span>
-                        <span className="text-slate-400 ml-2">({item.categoryName})</span>
+                        <span className="font-bold text-slate-900 text-sm">
+                          {translateDish(item.productName)}
+                        </span>
+                        <span className="text-slate-400 ml-2">
+                          ({translateCategory(item.categoryName)})
+                        </span>
                       </div>
                     </div>
 
                     <div className="text-right">
                       <span className="font-bold text-slate-900 text-sm">
                         {sortBy === 'quantity'
-                          ? `${item.quantitySold} units`
+                          ? `${item.quantitySold} ${isHindi ? 'प्लेटें' : 'units'}`
                           : formatPaise(item.totalRevenue)}
                       </span>
                       <span className="text-[11px] text-slate-400 ml-2">
                         {sortBy === 'quantity'
                           ? `(${formatPaise(item.totalRevenue)})`
-                          : `(${item.quantitySold} sold)`}
+                          : `(${item.quantitySold} ${isHindi ? 'बिकीं' : 'sold'})`}
                       </span>
                     </div>
                   </div>

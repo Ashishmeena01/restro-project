@@ -1,9 +1,9 @@
 import React from 'react';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { CheckCircle2, Clock, Utensils, Sparkles, ReceiptText, ArrowLeft, ShieldCheck } from 'lucide-react';
 import { getOrderById } from '@/services/order.service';
-import { formatPaise, formatDate } from '@/lib/utils';
+import { OrderClient } from '@/components/order/OrderClient';
+
+export const dynamic = 'force-dynamic';
 
 export default async function OrderStatusPage({
   params,
@@ -11,167 +11,17 @@ export default async function OrderStatusPage({
   params: Promise<{ orderId: string }>;
 }) {
   const { orderId } = await params;
-  const order = await getOrderById(orderId);
+  let order = null;
+
+  try {
+    order = await getOrderById(orderId);
+  } catch (e) {
+    console.error('Error fetching order by id:', e);
+  }
 
   if (!order) {
     notFound();
   }
 
-  const steps = [
-    { key: 'CONFIRMED', label: 'Order Confirmed', desc: 'Received by kitchen' },
-    { key: 'PREPARING', label: 'Preparing Fresh', desc: 'Cooking with desi ghee' },
-    { key: 'READY', label: 'Order Ready', desc: 'Ready to serve' },
-    { key: 'COMPLETED', label: 'Completed', desc: 'Served at table' },
-  ];
-
-  const getStepStatus = (stepKey: string) => {
-    const statusOrder = ['PENDING_PAYMENT', 'CONFIRMED', 'PREPARING', 'READY', 'COMPLETED'];
-    const currentIndex = statusOrder.indexOf(order.orderStatus);
-    const stepIndex = statusOrder.indexOf(stepKey);
-
-    if (order.orderStatus === 'CANCELLED') return 'cancelled';
-    if (currentIndex >= stepIndex) return 'completed';
-    return 'upcoming';
-  };
-
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-16">
-      {/* Top Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/menu" className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900">
-            <ArrowLeft className="w-4 h-4" />
-            <span>Digital Menu</span>
-          </Link>
-          <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-            {order.orderNumber}
-          </span>
-        </div>
-      </div>
-
-      <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
-        {/* Main Status Hero Card */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm text-center">
-          <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3 shadow-inner">
-            <CheckCircle2 className="w-8 h-8" />
-          </div>
-
-          <h1 className="text-xl font-bold text-slate-900">
-            {order.orderStatus === 'COMPLETED'
-              ? 'Order Completed & Served!'
-              : order.orderStatus === 'CANCELLED'
-              ? 'Order Has Been Cancelled'
-              : 'Order Received & Cooking!'}
-          </h1>
-
-          <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-            {order.table?.tableNumber ? (
-              <span>Your items will be served hot at <strong>{order.table.tableNumber}</strong>.</span>
-            ) : (
-              <span>Please collect your items at the takeaway counter.</span>
-            )}
-          </p>
-
-          <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-center gap-6 text-xs text-slate-600">
-            <div>
-              <p className="text-[11px] text-slate-400">Order Placed</p>
-              <p className="font-semibold text-slate-800">{formatDate(order.createdAt)}</p>
-            </div>
-            <div className="w-px h-8 bg-slate-200"></div>
-            <div>
-              <p className="text-[11px] text-slate-400">Payment Status</p>
-              <p className="font-semibold text-emerald-600 capitalize">{order.paymentStatus}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Live Timeline Tracker */}
-        <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
-          <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6">
-            Live Kitchen Tracking
-          </h2>
-
-          <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
-            {steps.map((st) => {
-              const state = getStepStatus(st.key);
-              const isDone = state === 'completed';
-
-              return (
-                <div key={st.key} className="relative flex items-start gap-4">
-                  <div
-                    className={`absolute -left-6 top-0.5 w-5 h-5 rounded-full flex items-center justify-center border-2 ${
-                      isDone
-                        ? 'bg-emerald-600 border-emerald-600 text-white'
-                        : 'bg-white border-slate-300 text-transparent'
-                    }`}
-                  >
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <p className={`text-xs font-bold ${isDone ? 'text-slate-900' : 'text-slate-400'}`}>
-                      {st.label}
-                    </p>
-                    <p className="text-[11px] text-slate-400">{st.desc}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Itemized Order Details */}
-        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-3">
-          <h2 className="text-xs font-bold text-slate-900 flex items-center justify-between">
-            <span>Ordered Items</span>
-            <span className="text-[11px] text-slate-400 font-normal">{order.items.length} dishes</span>
-          </h2>
-
-          <div className="divide-y divide-slate-100">
-            {order.items.map((it) => (
-              <div key={it.id} className="py-2.5 flex items-center justify-between text-xs">
-                <div>
-                  <span className="font-semibold text-slate-800">{it.productName}</span>
-                  <span className="text-slate-400 ml-2">x {it.quantity}</span>
-                </div>
-                <span className="font-bold text-slate-900">{formatPaise(it.totalPrice)}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="pt-3 border-t border-slate-100 space-y-1.5 text-xs text-slate-600">
-            <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span>{formatPaise(order.subtotal)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>GST (5%)</span>
-              <span>{formatPaise(order.tax)}</span>
-            </div>
-            <div className="flex justify-between font-bold text-sm text-slate-900 pt-1 border-t border-slate-100">
-              <span>Grand Total</span>
-              <span className="text-emerald-600">{formatPaise(order.total)}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Link
-            href={`/receipt/${order.id}`}
-            className="flex-1 inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-black text-white py-3 rounded-xl font-semibold text-xs shadow-sm transition-all"
-          >
-            <ReceiptText className="w-4 h-4 text-emerald-400" />
-            <span>View & Download Tax Receipt</span>
-          </Link>
-
-          <Link
-            href="/menu"
-            className="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-slate-50 text-slate-700 py-3 px-6 rounded-xl font-medium text-xs border border-slate-200 shadow-sm"
-          >
-            <span>Order More Dishes</span>
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+  return <OrderClient order={order} />;
 }

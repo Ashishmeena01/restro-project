@@ -3,13 +3,16 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { ArrowLeft, Printer, Download, Share2, CheckCircle2, ShieldCheck, Copy, Check } from 'lucide-react';
+import { ArrowLeft, Printer, Download, Share2, ShieldCheck, Check } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { formatPaise, formatDate } from '@/lib/utils';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 export default function ReceiptPage() {
   const params = useParams();
   const orderId = params.orderId as string;
+  const { t, isHindi, translateDish, translatePaymentMethod } = useLanguage();
 
   const [receiptData, setReceiptData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -143,7 +146,6 @@ export default function ReceiptPage() {
           url: window.location.href,
         });
       } catch (e) {
-        // Fallback to copy
         copyUrl();
       }
     } else {
@@ -163,7 +165,7 @@ export default function ReceiptPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-400 text-xs">
         <div className="w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mr-2"></div>
-        <span>Generating digital receipt...</span>
+        <span>{isHindi ? 'डिजिटल रसीद तैयार हो रही है...' : 'Generating digital receipt...'}</span>
       </div>
     );
   }
@@ -171,32 +173,37 @@ export default function ReceiptPage() {
   if (!receiptData) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center">
-        <p className="text-sm font-semibold text-slate-700">Receipt Not Found</p>
+        <p className="text-sm font-semibold text-slate-700">
+          {isHindi ? 'रसीद नहीं मिली' : 'Receipt Not Found'}
+        </p>
         <Link href="/menu" className="mt-4 text-xs text-emerald-600 underline">
-          Return to Menu
+          {isHindi ? 'मेनू पर वापस जाएं' : 'Return to Menu'}
         </Link>
       </div>
     );
   }
 
   const { parsedData } = receiptData;
+  const businessDisplayName = isHindi ? t('brand.name') : parsedData.businessName;
 
   return (
     <div className="min-h-screen bg-slate-100 py-8 px-4 flex flex-col items-center">
       {/* Top action toolbar (Hidden in print) */}
-      <div className="w-full max-w-md mb-4 flex items-center justify-between no-print">
+      <div className="w-full max-w-md mb-4 flex items-center justify-between no-print gap-2">
         <Link
           href={`/order/${orderId}`}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-sm"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-xs"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back</span>
+          <span>{isHindi ? 'वापस' : 'Back'}</span>
         </Link>
 
         <div className="flex items-center gap-2">
+          <LanguageSwitcher variant="compact" />
+
           <button
             onClick={handleDownloadPdf}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 shadow-sm transition-all"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 shadow-xs transition-all cursor-pointer"
             title="Download PDF"
           >
             <Download className="w-3.5 h-3.5 text-emerald-600" />
@@ -205,20 +212,20 @@ export default function ReceiptPage() {
 
           <button
             onClick={handlePrint}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 shadow-sm transition-all"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 shadow-xs transition-all cursor-pointer"
             title="Print Receipt"
           >
             <Printer className="w-3.5 h-3.5 text-slate-600" />
-            <span className="hidden sm:inline">Print</span>
+            <span className="hidden sm:inline">{t('receipt.print')}</span>
           </button>
 
           <button
             onClick={handleShare}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 shadow-sm transition-all"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 shadow-xs transition-all cursor-pointer"
             title="Share or Copy Link"
           >
             {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Share2 className="w-3.5 h-3.5 text-slate-600" />}
-            <span className="hidden sm:inline">{copied ? 'Copied' : 'Share'}</span>
+            <span className="hidden sm:inline">{copied ? t('receipt.copied') : t('receipt.share')}</span>
           </button>
         </div>
       </div>
@@ -231,33 +238,35 @@ export default function ReceiptPage() {
         {/* Receipt Header */}
         <div className="text-center space-y-1 pb-4 border-b border-dashed border-slate-200">
           <div className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm mx-auto mb-2">
-            V
+            व
           </div>
           <h2 className="font-extrabold text-lg text-slate-900 leading-tight">
-            {parsedData.businessName}
+            {businessDisplayName}
           </h2>
           <p className="text-[11px] text-slate-500 leading-tight">{parsedData.businessAddress}</p>
           {parsedData.fssaiNumber && (
-            <p className="text-[10px] text-emerald-700 font-medium">FSSAI Lic. {parsedData.fssaiNumber}</p>
+            <p className="text-[10px] text-emerald-700 font-medium">
+              {t('receipt.fssai_lic')} {parsedData.fssaiNumber}
+            </p>
           )}
         </div>
 
         {/* Metadata badges */}
         <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 pb-4 border-b border-dashed border-slate-200">
           <div>
-            <span className="text-[10px] text-slate-400 block uppercase">Receipt #</span>
+            <span className="text-[10px] text-slate-400 block uppercase">{t('receipt.receipt_no')}</span>
             <span className="font-bold text-slate-900">{parsedData.receiptNumber}</span>
           </div>
           <div className="text-right">
-            <span className="text-[10px] text-slate-400 block uppercase">Order #</span>
+            <span className="text-[10px] text-slate-400 block uppercase">{t('order.number')}</span>
             <span className="font-bold text-slate-900">{parsedData.orderNumber}</span>
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 block uppercase">Table / Dine-in</span>
+            <span className="text-[10px] text-slate-400 block uppercase">{t('receipt.table')}</span>
             <span className="font-semibold text-slate-800">{parsedData.tableNumber || 'Counter'}</span>
           </div>
           <div className="text-right">
-            <span className="text-[10px] text-slate-400 block uppercase">Date & Time</span>
+            <span className="text-[10px] text-slate-400 block uppercase">{t('receipt.date')}</span>
             <span className="font-semibold text-slate-800">{formatDate(parsedData.date)}</span>
           </div>
         </div>
@@ -265,16 +274,18 @@ export default function ReceiptPage() {
         {/* Itemized Table */}
         <div className="space-y-2 pb-4 border-b border-dashed border-slate-200">
           <div className="flex justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider pb-1">
-            <span>Item</span>
-            <span className="text-center w-12">Qty</span>
-            <span className="text-right w-20">Amount</span>
+            <span>{t('receipt.items')}</span>
+            <span className="text-center w-12">{t('receipt.qty')}</span>
+            <span className="text-right w-20">{t('receipt.amount')}</span>
           </div>
 
           <div className="divide-y divide-slate-100">
             {parsedData.items.map((item: any, idx: number) => (
               <div key={idx} className="py-2 flex items-center justify-between text-xs">
                 <div className="flex-1 pr-2">
-                  <p className="font-semibold text-slate-900">{item.name}</p>
+                  <p className="font-semibold text-slate-900">
+                    {translateDish(item.name)}
+                  </p>
                   <p className="text-[10px] text-slate-400">{formatPaise(item.unitPrice)} each</p>
                 </div>
                 <span className="text-center w-12 font-medium text-slate-600">{item.quantity}</span>
@@ -287,21 +298,21 @@ export default function ReceiptPage() {
         {/* Calculation Totals */}
         <div className="space-y-1.5 text-xs text-slate-600 pb-4 border-b border-dashed border-slate-200">
           <div className="flex justify-between">
-            <span>Subtotal</span>
+            <span>{t('receipt.subtotal')}</span>
             <span>{formatPaise(parsedData.subtotal)}</span>
           </div>
           <div className="flex justify-between">
-            <span>GST (5%)</span>
+            <span>{t('receipt.tax')}</span>
             <span>{formatPaise(parsedData.tax)}</span>
           </div>
           {parsedData.discount > 0 && (
             <div className="flex justify-between text-emerald-600">
-              <span>Discount</span>
+              <span>{isHindi ? 'छूट (Discount)' : 'Discount'}</span>
               <span>-{formatPaise(parsedData.discount)}</span>
             </div>
           )}
           <div className="flex justify-between font-extrabold text-base text-slate-900 pt-2 border-t border-slate-200">
-            <span>Amount Paid</span>
+            <span>{t('receipt.total')}</span>
             <span className="text-emerald-600">{formatPaise(parsedData.total)}</span>
           </div>
         </div>
@@ -309,27 +320,28 @@ export default function ReceiptPage() {
         {/* Payment & Security Ref */}
         <div className="bg-slate-50 p-3 rounded-xl text-[11px] text-slate-500 space-y-1">
           <div className="flex justify-between">
-            <span>Payment Method:</span>
-            <span className="font-semibold text-slate-800 capitalize">
-              {parsedData.paymentMethod === 'ONLINE_RAZORPAY' ? 'Razorpay Online' : parsedData.paymentMethod === 'TEST' ? 'Test Payment' : 'Cash on Counter'}
+            <span>{t('receipt.payment_mode')}:</span>
+            <span className="font-semibold text-slate-800">
+              {translatePaymentMethod(parsedData.paymentMethod)}
             </span>
           </div>
           {parsedData.transactionRef && (
             <div className="flex justify-between">
-              <span>Txn Ref:</span>
+              <span>{isHindi ? 'ट्रांजेक्शन संदर्भ' : 'Txn Ref'}:</span>
               <span className="font-mono text-slate-700">{parsedData.transactionRef}</span>
             </div>
           )}
           <div className="flex items-center gap-1 text-emerald-700 pt-1">
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span className="font-medium">Digitally Verified & Tax Paid</span>
+            <span className="font-medium">
+              {isHindi ? 'डिजिटली सत्यापित व कर भुगतान संपन्न' : 'Digitally Verified & Tax Paid'}
+            </span>
           </div>
         </div>
 
         {/* Footer greeting */}
-        <p className="text-center text-[11px] text-slate-400 pt-1">
-          Radhe Radhe! Thank you for dining with us. <br />
-          Please visit again!
+        <p className="text-center text-[11px] text-slate-400 pt-1 leading-relaxed">
+          {t('receipt.footer_msg')}
         </p>
       </div>
     </div>
