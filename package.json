@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate --schema=prisma/schema.prisma && next build",
-    "postinstall": "prisma generate --schema=prisma/schema.prisma",
+    "build": "node scripts/generate-prisma.js && next build",
+    "postinstall": "node scripts/generate-prisma.js",
     "start": "next start",
     "lint": "eslint",
-    "db:generate": "prisma generate --schema=prisma/schema.prisma",
+    "db:generate": "node scripts/generate-prisma.js",
     "db:push": "prisma db push --schema=prisma/schema.prisma",
     "db:sqlite:push": "prisma db push --schema=prisma/schema.sqlite.prisma",
     "db:seed": "node prisma/seed.js"
