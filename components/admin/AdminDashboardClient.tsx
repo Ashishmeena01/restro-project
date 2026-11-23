@@ -82,7 +82,7 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
       {/* Metric Cards Grid */}
       <div className="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Today's Revenue */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
+        <div className="mi-lift mi-fade-up bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:border-amber-200 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">
               {isHindi ? 'आज का कुल राजस्व' : "Today's Net Revenue"}
@@ -106,7 +106,7 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
         </div>
 
         {/* Units Sold */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
+        <div className="mi-lift mi-fade-up bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:border-amber-200 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">
               {isHindi ? 'आज बेची गई प्लेटें/इकाइयाँ' : 'Units Sold Today'}
@@ -126,7 +126,7 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
         </div>
 
         {/* Average Order Value (AOV) */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
+        <div className="mi-lift mi-fade-up bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:border-amber-200 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">
               {isHindi ? 'औसत आर्डर मूल्य (AOV)' : 'Avg Order Value (AOV)'}
@@ -146,7 +146,7 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
         </div>
 
         {/* Pending Orders */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
+        <div className="mi-lift mi-fade-up bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:border-amber-200 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">
               {isHindi ? 'रसोई में लंबित आर्डर' : 'Pending / In Kitchen'}

@@ -129,7 +129,7 @@ export function HomeClient({ business, previewProducts }: HomeClientProps) {
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/menu"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-3.5 rounded-full font-semibold text-sm sm:text-base transition-colors shadow-lg shadow-emerald-900/40"
+              className="mi-press mi-arrow mi-shine w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-3.5 rounded-full font-semibold text-sm sm:text-base shadow-lg shadow-emerald-900/40"
             >
               <UtensilsCrossed className="w-5 h-5" />
               <span>{t('hero.cta_order')}</span>
@@ -137,7 +137,7 @@ export function HomeClient({ business, previewProducts }: HomeClientProps) {
             </Link>
             <Link
               href="/menu"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-amber-200/50 hover:bg-white/10 text-amber-50 px-7 py-3.5 rounded-full font-semibold text-sm sm:text-base transition-colors"
+              className="mi-press mi-icon-spin w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-amber-200/50 hover:bg-white/10 text-amber-50 px-7 py-3.5 rounded-full font-semibold text-sm sm:text-base"
             >
               <QrCode className="w-5 h-5 text-amber-300" />
               <span>{t('hero.cta_qr')}</span>
@@ -168,8 +168,8 @@ export function HomeClient({ business, previewProducts }: HomeClientProps) {
       <section className="bg-slate-100 border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
           {features.map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="flex flex-col items-center text-center gap-2">
-              <div className="w-12 h-12 rounded-full border border-amber-500/50 bg-white flex items-center justify-center text-emerald-700">
+            <div key={title} className="group mi-reveal flex flex-col items-center text-center gap-2">
+              <div className="w-12 h-12 rounded-full border border-amber-500/50 bg-white flex items-center justify-center text-emerald-700 transition-transform duration-300 group-hover:-translate-y-1 group-hover:rotate-6">
                 <Icon className="w-5 h-5" />
               </div>
               <p className="font-display text-base text-slate-900">{title}</p>
@@ -195,7 +195,7 @@ export function HomeClient({ business, previewProducts }: HomeClientProps) {
             {previewProducts.map((product) => (
               <article
                 key={product.id}
-                className="group bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col"
+                className="group mi-lift mi-reveal bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:border-amber-300 flex flex-col"
               >
                 <div className="relative h-44 bg-gradient-to-br from-emerald-100 to-amber-100 overflow-hidden">
                   <ChefHat className="absolute inset-0 m-auto w-10 h-10 text-emerald-300" aria-hidden />
