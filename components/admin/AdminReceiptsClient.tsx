@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ExternalLink } from 'lucide-react';
+import { ArrowSquareOut as ExternalLink } from '@phosphor-icons/react';
 import { formatPaise, formatDate } from '@/lib/utils';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 

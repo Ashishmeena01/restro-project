@@ -5,16 +5,16 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   ArrowLeft,
-  Trash2,
+  Trash as Trash2,
   Plus,
   Minus,
   CreditCard,
-  Banknote,
+  Money as Banknote,
   ShieldCheck,
-  AlertCircle,
-  UtensilsCrossed,
-  FlaskConical,
-} from 'lucide-react';
+  WarningCircle as AlertCircle,
+  ForkKnife as UtensilsCrossed,
+  Flask as FlaskConical,
+} from '@phosphor-icons/react';
 import { useCart } from '@/components/cart/CartContext';
 import { formatPaise } from '@/lib/utils';
 import { Alert } from '@/components/ui/alert';

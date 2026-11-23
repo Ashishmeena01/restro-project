@@ -4,22 +4,22 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  LayoutDashboard,
+  SquaresFour as LayoutDashboard,
   ShoppingBag,
-  UtensilsCrossed,
-  Tags,
+  ForkKnife as UtensilsCrossed,
+  Tag as Tags,
   CreditCard,
-  ReceiptText,
-  BarChart3,
-  TrendingUp,
+  Receipt as ReceiptText,
+  ChartBar as BarChart3,
+  TrendUp as TrendingUp,
   QrCode,
-  Settings,
-  LogOut,
-  Menu,
+  GearSix as Settings,
+  SignOut as LogOut,
+  List as Menu,
   X,
-  ExternalLink,
-  Store,
-} from 'lucide-react';
+  ArrowSquareOut as ExternalLink,
+  Storefront as Store,
+} from '@phosphor-icons/react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 

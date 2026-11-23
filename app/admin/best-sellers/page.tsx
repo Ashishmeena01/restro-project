@@ -1,11 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import {
-  TrendingUp,
-  Flame,
-  UtensilsCrossed,
-} from 'lucide-react';
+import { TrendUp as TrendingUp, Fire as Flame, ForkKnife as UtensilsCrossed } from '@phosphor-icons/react';
 import { formatPaise } from '@/lib/utils';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 

@@ -4,16 +4,16 @@ import React from 'react';
 import Link from 'next/link';
 import {
   QrCode,
-  UtensilsCrossed,
+  ForkKnife as UtensilsCrossed,
   Clock,
   MapPin,
   Phone,
   ShieldCheck,
   ArrowRight,
-  Award,
-  Sparkles,
+  Medal as Award,
+  Sparkle as Sparkles,
   ChefHat,
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { formatPaise } from '@/lib/utils';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';

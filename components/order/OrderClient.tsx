@@ -2,7 +2,12 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { CheckCircle2, ReceiptText, ArrowLeft, UtensilsCrossed } from 'lucide-react';
+import {
+  CheckCircle as CheckCircle2,
+  Receipt as ReceiptText,
+  ArrowLeft,
+  ForkKnife as UtensilsCrossed,
+} from '@phosphor-icons/react';
 import { formatPaise, formatDate } from '@/lib/utils';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';

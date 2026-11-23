@@ -3,7 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { ArrowLeft, Printer, Download, Share2, ShieldCheck, Check } from 'lucide-react';
+import {
+  ArrowLeft,
+  Printer,
+  DownloadSimple as Download,
+  ShareNetwork as Share2,
+  ShieldCheck,
+  Check,
+} from '@phosphor-icons/react';
 import { jsPDF } from 'jspdf';
 import { formatPaise, formatDate } from '@/lib/utils';
 import { useLanguage } from '@/lib/i18n/LanguageContext';

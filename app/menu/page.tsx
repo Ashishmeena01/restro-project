@@ -3,7 +3,13 @@
 import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Search, Plus, Minus, UtensilsCrossed, ArrowRight } from 'lucide-react';
+import {
+  MagnifyingGlass as Search,
+  Plus,
+  Minus,
+  ForkKnife as UtensilsCrossed,
+  ArrowRight,
+} from '@phosphor-icons/react';
 import { useCart } from '@/components/cart/CartContext';
 import { formatPaise } from '@/lib/utils';
 import { useLanguage } from '@/lib/i18n/LanguageContext';

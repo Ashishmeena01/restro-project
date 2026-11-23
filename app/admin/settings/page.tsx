@@ -1,7 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Save, CheckCircle2, AlertCircle, ShieldCheck, CreditCard, Store } from 'lucide-react';
+import {
+  FloppyDisk as Save,
+  CheckCircle as CheckCircle2,
+  WarningCircle as AlertCircle,
+  ShieldCheck,
+  CreditCard,
+  Storefront as Store,
+} from '@phosphor-icons/react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function AdminSettingsPage() {

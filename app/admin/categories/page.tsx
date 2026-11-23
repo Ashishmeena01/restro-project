@@ -1,7 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Tags, X, AlertCircle } from 'lucide-react';
+import {
+  Plus,
+  PencilSimple as Edit2,
+  Trash as Trash2,
+  Tag as Tags,
+  X,
+  WarningCircle as AlertCircle,
+} from '@phosphor-icons/react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function AdminCategoriesPage() {
