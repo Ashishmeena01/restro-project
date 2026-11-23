@@ -235,7 +235,7 @@ export default function CheckoutPage() {
 
         <form onSubmit={handleCheckout} className="space-y-4">
           {/* 1. Itemized Cart Summary */}
-          <Card className="checkout-panel space-y-3 rounded-2xl p-4 sm:p-5">
+          <Card className="checkout-panel mi-fade-up space-y-3 rounded-2xl p-4 sm:p-5">
             <div className="flex items-center justify-between">
               <CardTitle className="font-display text-base font-semibold">{t('checkout.order_summary')}</CardTitle>
               <Button
@@ -285,16 +285,16 @@ export default function CheckoutPage() {
                             type="button"
                             onClick={() => updateQuantity(item.productId, item.quantity - 1)}
                             aria-label="Decrease quantity"
-                            className="w-7 h-7 inline-flex items-center justify-center rounded-full hover:bg-emerald-100 cursor-pointer"
+                            className="mi-press w-7 h-7 inline-flex items-center justify-center rounded-full hover:bg-emerald-100 cursor-pointer"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
-                          <span className="min-w-5 text-center text-xs font-bold">{item.quantity}</span>
+                          <span key={item.quantity} className="mi-pop min-w-5 text-center text-xs font-bold">{item.quantity}</span>
                           <button
                             type="button"
                             onClick={() => updateQuantity(item.productId, item.quantity + 1)}
                             aria-label="Increase quantity"
-                            className="w-7 h-7 inline-flex items-center justify-center rounded-full hover:bg-emerald-100 cursor-pointer"
+                            className="mi-press w-7 h-7 inline-flex items-center justify-center rounded-full hover:bg-emerald-100 cursor-pointer"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
@@ -303,7 +303,7 @@ export default function CheckoutPage() {
                           type="button"
                           onClick={() => removeItem(item.productId)}
                           aria-label="Remove item"
-                          className="w-7 h-7 inline-flex items-center justify-center rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                          className="mi-press w-7 h-7 inline-flex items-center justify-center rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 cursor-pointer"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -332,7 +332,7 @@ export default function CheckoutPage() {
           </Card>
 
           {/* 2. Customer & Table Details */}
-          <Card className="checkout-panel space-y-3 rounded-2xl p-4 sm:p-5">
+          <Card className="checkout-panel mi-fade-up space-y-3 rounded-2xl p-4 sm:p-5" style={{ '--mi-delay': '80ms' } as React.CSSProperties}>
             <CardTitle className="font-display text-base font-semibold">{t('checkout.customer_details')}</CardTitle>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -401,7 +401,7 @@ export default function CheckoutPage() {
           </Card>
 
           {/* 3. Payment Method Choice */}
-          <Card className="checkout-panel space-y-3 rounded-2xl p-4 sm:p-5">
+          <Card className="checkout-panel mi-fade-up space-y-3 rounded-2xl p-4 sm:p-5" style={{ '--mi-delay': '160ms' } as React.CSSProperties}>
             <CardTitle className="font-display text-base font-semibold">{t('checkout.payment_method')}</CardTitle>
 
             <RadioGroup aria-label="Select payment method">
@@ -493,7 +493,7 @@ export default function CheckoutPage() {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="neon-checkout-button w-full h-auto bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-full font-semibold text-sm sm:text-base whitespace-normal shadow-lg shadow-emerald-200 hover:shadow-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+            className="neon-checkout-button mi-press mi-shine w-full h-auto bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-full font-semibold text-sm sm:text-base whitespace-normal shadow-lg shadow-emerald-200 hover:shadow-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
           >
             {isSubmitting ? (
               <span className="inline-flex items-center gap-2">

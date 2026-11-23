@@ -125,13 +125,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                  className={`mi-press group flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold ${
                     isActive
                       ? 'bg-emerald-600 text-white shadow-md shadow-black/30'
                       : 'text-slate-300 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-amber-300/70'}`} />
+                  <Icon className={`w-4 h-4 transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-white' : 'text-amber-300/70'}`} />
                   <span>{item.label}</span>
                 </Link>
               );

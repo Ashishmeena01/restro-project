@@ -206,7 +206,7 @@ function MenuContent() {
                     return (
                       <div
                         key={product.id}
-                        className="bg-white rounded-2xl p-3 sm:p-4 border border-slate-200 shadow-sm flex gap-4 hover:shadow-md hover:border-emerald-200 transition-all"
+                        className="group mi-lift mi-reveal bg-white rounded-2xl p-3 sm:p-4 border border-slate-200 shadow-sm flex gap-4 hover:border-emerald-200"
                       >
                         <div className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 rounded-xl overflow-hidden bg-slate-100 relative">
                           {product.imageUrl ? (
@@ -259,23 +259,25 @@ function MenuContent() {
                             {cartQty === 0 ? (
                               <button
                                 onClick={() => addItem(product)}
-                                className="inline-flex items-center gap-1.5 bg-white hover:bg-emerald-600 text-emerald-700 hover:text-white px-4 py-1.5 rounded-full text-xs font-semibold border border-emerald-600 transition-all cursor-pointer"
+                                className="mi-press group/add inline-flex items-center gap-1.5 bg-white hover:bg-emerald-600 text-emerald-700 hover:text-white px-4 py-1.5 rounded-full text-xs font-semibold border border-emerald-600 cursor-pointer"
                               >
-                                <Plus className="w-3.5 h-3.5" />
+                                <Plus className="w-3.5 h-3.5 transition-transform duration-300 group-hover/add:rotate-90" />
                                 <span>{t('menu.add_btn')}</span>
                               </button>
                             ) : (
-                              <div className="inline-flex items-center rounded-full bg-emerald-600 text-white shadow-sm shadow-emerald-200">
+                              <div className="mi-pop inline-flex items-center rounded-full bg-emerald-600 text-white shadow-sm shadow-emerald-200">
                                 <button
                                   onClick={() => updateQuantity(product.id, cartQty - 1)}
-                                  className="p-1.5 pl-2.5 hover:bg-emerald-700 rounded-l-full transition-colors cursor-pointer"
+                                  aria-label="Decrease quantity"
+                                  className="mi-press p-1.5 pl-2.5 hover:bg-emerald-700 rounded-l-full cursor-pointer"
                                 >
                                   <Minus className="w-3.5 h-3.5" />
                                 </button>
-                                <span className="px-2.5 text-xs font-bold">{cartQty}</span>
+                                <span key={cartQty} className="mi-pop px-2.5 text-xs font-bold">{cartQty}</span>
                                 <button
                                   onClick={() => updateQuantity(product.id, cartQty + 1)}
-                                  className="p-1.5 pr-2.5 hover:bg-emerald-700 rounded-r-full transition-colors cursor-pointer"
+                                  aria-label="Increase quantity"
+                                  className="mi-press p-1.5 pr-2.5 hover:bg-emerald-700 rounded-r-full cursor-pointer"
                                 >
                                   <Plus className="w-3.5 h-3.5" />
                                 </button>
@@ -295,13 +297,13 @@ function MenuContent() {
 
       {/* Floating Sticky Cart Bar */}
       {totalItems > 0 && (
-        <div className="fixed bottom-4 left-4 right-4 z-40 max-w-lg mx-auto">
+        <div className="mi-slide-up fixed bottom-4 left-4 right-4 z-40 max-w-lg mx-auto">
           <Link
             href="/checkout"
-            className="flex items-center justify-between bg-slate-950 hover:bg-slate-900 text-white px-5 py-3.5 rounded-full shadow-xl shadow-slate-900/30 border border-amber-500/30 transition-all hover:scale-[1.01]"
+            className="group mi-press flex items-center justify-between bg-slate-950 hover:bg-slate-900 text-white px-5 py-3.5 rounded-full shadow-xl shadow-slate-900/30 border border-amber-500/30"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">
+              <div key={totalItems} className="mi-pop w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">
                 {totalItems}
               </div>
               <div>
@@ -314,7 +316,7 @@ function MenuContent() {
 
             <div className="flex items-center gap-2 text-amber-300 font-semibold text-sm">
               <span>{t('menu.view_cart')}</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
             </div>
           </Link>
         </div>

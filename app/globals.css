@@ -215,3 +215,128 @@ body {
     display: none !important;
   }
 }
+
+/* Micro-interactions */
+:where(a, button, summary, [role='button'], [role='radio']):focus-visible {
+  outline: 2px solid #d97706;
+  outline-offset: 2px;
+}
+
+.mi-press {
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 160ms ease, color 160ms ease, box-shadow 200ms ease;
+}
+.mi-press:active {
+  transform: scale(0.96);
+}
+
+.mi-lift {
+  transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 280ms ease, border-color 200ms ease;
+}
+.mi-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px -20px rgb(68 35 10 / 0.35);
+}
+.mi-lift:active {
+  transform: translateY(-1px) scale(0.995);
+}
+
+.mi-arrow > svg:last-child {
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mi-arrow:hover > svg:last-child {
+  transform: translateX(3px);
+}
+
+.mi-icon-spin > svg {
+  transition: transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mi-icon-spin:hover > svg {
+  transform: rotate(-12deg) scale(1.08);
+}
+
+.mi-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.mi-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.28) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 700ms ease;
+  pointer-events: none;
+}
+.mi-shine:hover::after {
+  transform: translateX(120%);
+}
+
+.mi-pop {
+  display: inline-block;
+  animation: mi-pop 280ms cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+@keyframes mi-pop {
+  from {
+    transform: scale(0.55);
+    opacity: 0.3;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.mi-fade-up {
+  animation: mi-fade-up 600ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: var(--mi-delay, 0ms);
+}
+@keyframes mi-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.mi-slide-up {
+  animation: mi-slide-up 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes mi-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .mi-reveal {
+    animation: mi-fade-up linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mi-press,
+  .mi-lift,
+  .mi-pop,
+  .mi-fade-up,
+  .mi-slide-up,
+  .mi-reveal,
+  .mi-arrow > svg:last-child,
+  .mi-icon-spin > svg,
+  .mi-shine::after {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
