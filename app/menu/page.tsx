@@ -13,6 +13,10 @@ import {
 import { useCart } from '@/components/cart/CartContext';
 import { formatPaise } from '@/lib/utils';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
+import {
+  translateDish as translateDishHelper,
+  translateDescription as translateDescriptionHelper,
+} from '@/lib/i18n/translations';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { VegMark } from '@/components/ui/VegMark';
 
@@ -83,9 +87,9 @@ function MenuContent() {
           const query = searchQuery.toLowerCase().trim();
           prods = prods.filter((p) => {
             const engName = p.name.toLowerCase();
-            const hindiName = translateDish(p.name).toLowerCase();
+            const hindiName = translateDishHelper(p.name, 'hi').toLowerCase();
             const engDesc = (p.description || '').toLowerCase();
-            const hindiDesc = translateDescription(p.description).toLowerCase();
+            const hindiDesc = translateDescriptionHelper(p.description, 'hi').toLowerCase();
             return (
               engName.includes(query) ||
               hindiName.includes(query) ||
@@ -104,7 +108,7 @@ function MenuContent() {
         if (selectedCategory !== 'all' && cat.id !== selectedCategory) return false;
         return cat.products.length > 0;
       });
-  }, [categories, selectedCategory, searchQuery, translateDish, translateDescription]);
+  }, [categories, selectedCategory, searchQuery]);
 
   const getItemQuantityInCart = (productId: string) => {
     const item = items.find((i) => i.productId === productId);
