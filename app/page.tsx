@@ -21,10 +21,10 @@ export default async function HomePage() {
   };
 
   const previewProducts = menuData?.categories?.flatMap((c) => c.products).slice(0, 4) || [
-    { id: '1', name: 'Samosa', price: 1500, description: 'Golden crispy crust filled with fragrant spiced potatoes and green peas.' },
-    { id: '2', name: 'Kachori', price: 2000, description: 'Flaky khasta kachori with spiced moong dal served with hing aloo sabzi.' },
-    { id: '3', name: 'Tea', price: 1000, description: 'Hot kadak ginger & cardamom spiced Indian masala chai.' },
-    { id: '4', name: 'Poha', price: 2500, description: 'Steamed flattened rice with peanuts, mustard seeds, and crunchy Ratlami sev.' },
+    { id: '1', imageUrl: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80', name: 'Samosa', price: 1500, description: 'Golden crispy crust filled with fragrant spiced potatoes and green peas.' },
+    { id: '2', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Kachori_MA23.jpg/960px-Kachori_MA23.jpg', name: 'Kachori', price: 2000, description: 'Flaky khasta kachori with spiced moong dal served with hing aloo sabzi.' },
+    { id: '3', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Chai_In_Sakora.jpg', name: 'Tea', price: 1000, description: 'Hot kadak ginger & cardamom spiced Indian masala chai.' },
+    { id: '4', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Indori_Poha%2C_New_Delhi.jpg/960px-Indori_Poha%2C_New_Delhi.jpg', name: 'Poha', price: 2500, description: 'Steamed flattened rice with peanuts, mustard seeds, and crunchy Ratlami sev.' },
   ];
 
   return <HomeClient business={business} previewProducts={previewProducts} />;

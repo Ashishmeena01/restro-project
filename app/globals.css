@@ -1,76 +1,51 @@
 @import "tailwindcss";
 
-/* Site-wide black & white palette — remaps every accent color. */
+/* Warm restaurant palette: "emerald" is the saffron/terracotta brand scale,
+   "slate" is a warm cream-to-espresso neutral scale. */
 @theme {
-  --color-emerald-50: #fafafa;
-  --color-emerald-100: #f4f4f5;
-  --color-emerald-200: #e4e4e7;
-  --color-emerald-300: #d4d4d8;
-  --color-emerald-400: #a1a1aa;
-  --color-emerald-500: #71717a;
-  --color-emerald-600: #18181b;
-  --color-emerald-700: #111111;
-  --color-emerald-800: #0a0a0a;
-  --color-emerald-900: #000000;
-  --color-emerald-950: #000000;
+  --color-emerald-50: #fff7ed;
+  --color-emerald-100: #ffedd5;
+  --color-emerald-200: #fed7aa;
+  --color-emerald-300: #fdba74;
+  --color-emerald-400: #fb923c;
+  --color-emerald-500: #ea580c;
+  --color-emerald-600: #c2410c;
+  --color-emerald-700: #9a3412;
+  --color-emerald-800: #7c2d12;
+  --color-emerald-900: #5c1f0c;
+  --color-emerald-950: #431407;
 
-  --color-rose-50: #fafafa;
-  --color-rose-100: #f4f4f5;
-  --color-rose-200: #e4e4e7;
-  --color-rose-300: #d4d4d8;
-  --color-rose-400: #a1a1aa;
-  --color-rose-500: #52525b;
-  --color-rose-600: #3f3f46;
-  --color-rose-700: #27272a;
-  --color-rose-800: #18181b;
-  --color-rose-900: #000000;
+  --color-slate-50: #fdf8f1;
+  --color-slate-100: #f7efe3;
+  --color-slate-200: #ecdfcc;
+  --color-slate-300: #dcc8ad;
+  --color-slate-400: #b39b7e;
+  --color-slate-500: #8a7560;
+  --color-slate-600: #6b5847;
+  --color-slate-700: #523f31;
+  --color-slate-800: #3a2c22;
+  --color-slate-900: #24170f;
+  --color-slate-950: #170e09;
+}
 
-  --color-amber-50: #fafafa;
-  --color-amber-100: #f4f4f5;
-  --color-amber-200: #e4e4e7;
-  --color-amber-300: #d4d4d8;
-  --color-amber-500: #71717a;
-  --color-amber-600: #3f3f46;
-  --color-amber-700: #27272a;
-  --color-amber-800: #18181b;
-  --color-amber-900: #000000;
-
-  --color-blue-50: #fafafa;
-  --color-blue-600: #18181b;
-
-  --color-purple-50: #fafafa;
-  --color-purple-100: #f4f4f5;
-  --color-purple-200: #e4e4e7;
-  --color-purple-600: #18181b;
-  --color-purple-700: #111111;
-  --color-purple-800: #000000;
-
-  --color-slate-50: #fafafa;
-  --color-slate-100: #f4f4f5;
-  --color-slate-200: #e4e4e7;
-  --color-slate-300: #d4d4d8;
-  --color-slate-400: #a1a1aa;
-  --color-slate-500: #71717a;
-  --color-slate-600: #52525b;
-  --color-slate-700: #3f3f46;
-  --color-slate-800: #27272a;
-  --color-slate-900: #18181b;
+@theme inline {
+  --font-sans: var(--font-inter), var(--font-devanagari), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-playfair), var(--font-tiro), Georgia, serif;
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #000000;
-  --primary: #000000;
-  --primary-hover: #27272a;
-  --accent: #52525b;
-  --neon-violet: #7c3aed;
-  --neon-lime: #c4ff52;
+  --background: #fdf8f1;
+  --foreground: #24170f;
+  --primary: #c2410c;
+  --primary-hover: #9a3412;
+  --accent: #d97706;
+  --neon-violet: #c2410c;
+  --neon-lime: #f59e0b;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -80,20 +55,21 @@ body {
 }
 
 .checkout-panel:hover {
-  border-color: #d4c5ff;
-  box-shadow: 0 12px 32px -24px rgb(124 58 237 / 35%);
+  border-color: #fdba74;
+  box-shadow: 0 12px 32px -24px rgb(194 65 12 / 35%);
 }
 
 .payment-method-card {
   position: relative;
   isolation: isolate;
+  overflow: hidden;
   transition: transform 180ms ease, border-color 180ms ease, box-shadow 220ms ease, background-color 180ms ease;
 }
 
 .payment-method-card:hover {
   transform: translateY(-2px);
-  border-color: #a78bfa;
-  box-shadow: 0 8px 24px -18px rgb(124 58 237 / 50%);
+  border-color: #fb923c;
+  box-shadow: 0 8px 24px -18px rgb(194 65 12 / 50%);
 }
 
 .payment-method-card:active {
@@ -102,7 +78,7 @@ body {
 
 .payment-method-card[data-selected="true"] {
   border-color: var(--neon-violet);
-  box-shadow: 0 0 0 1px rgb(124 58 237 / 18%), 0 10px 28px -18px rgb(124 58 237 / 55%);
+  box-shadow: 0 0 0 1px rgb(194 65 12 / 18%), 0 10px 28px -18px rgb(194 65 12 / 55%);
   animation: selected-glow 2.8s ease-in-out infinite;
 }
 
@@ -125,7 +101,7 @@ body {
 
 .payment-input:focus-visible {
   border-color: var(--neon-violet);
-  box-shadow: 0 0 0 3px rgb(124 58 237 / 14%), 0 0 14px rgb(124 58 237 / 10%);
+  box-shadow: 0 0 0 3px rgb(194 65 12 / 14%), 0 0 14px rgb(194 65 12 / 10%);
 }
 
 .neon-checkout-button {
@@ -136,7 +112,7 @@ body {
 
 .neon-checkout-button:not(:disabled):hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px -12px rgb(124 58 237 / 45%), 0 0 0 1px rgb(196 255 82 / 28%);
+  box-shadow: 0 10px 28px -12px rgb(194 65 12 / 45%), 0 0 0 1px rgb(245 158 11 / 28%);
 }
 
 .neon-checkout-button:not(:disabled):active {
@@ -161,13 +137,13 @@ body {
 }
 
 .payment-ledger-row:hover {
-  background-color: #faf8ff;
+  background-color: #fff7ed;
   box-shadow: inset 3px 0 0 var(--neon-violet);
 }
 
 @keyframes selected-glow {
-  0%, 100% { box-shadow: 0 0 0 1px rgb(124 58 237 / 14%), 0 8px 22px -18px rgb(124 58 237 / 38%); }
-  50% { box-shadow: 0 0 0 1px rgb(124 58 237 / 28%), 0 10px 28px -16px rgb(124 58 237 / 58%); }
+  0%, 100% { box-shadow: 0 0 0 1px rgb(194 65 12 / 14%), 0 8px 22px -18px rgb(194 65 12 / 38%); }
+  50% { box-shadow: 0 0 0 1px rgb(194 65 12 / 28%), 0 10px 28px -16px rgb(194 65 12 / 58%); }
 }
 
 @keyframes selected-sheen {
@@ -185,20 +161,38 @@ body {
   }
 }
 
+/* Ornamental divider used for restaurant-style section headings. */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.ornament::before,
+.ornament::after {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, currentColor);
+  content: "";
+  opacity: 0.45;
+}
+.ornament::after {
+  background: linear-gradient(90deg, currentColor, transparent);
+}
+
 /* Custom scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #f7efe3;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #dcc8ad;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #b39b7e;
 }
 
 /* Receipt print styles */
@@ -219,5 +213,130 @@ body {
   }
   .no-print {
     display: none !important;
+  }
+}
+
+/* Micro-interactions */
+:where(a, button, summary, [role='button'], [role='radio']):focus-visible {
+  outline: 2px solid #d97706;
+  outline-offset: 2px;
+}
+
+.mi-press {
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 160ms ease, color 160ms ease, box-shadow 200ms ease;
+}
+.mi-press:active {
+  transform: scale(0.96);
+}
+
+.mi-lift {
+  transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 280ms ease, border-color 200ms ease;
+}
+.mi-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px -20px rgb(68 35 10 / 0.35);
+}
+.mi-lift:active {
+  transform: translateY(-1px) scale(0.995);
+}
+
+.mi-arrow > svg:last-child {
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mi-arrow:hover > svg:last-child {
+  transform: translateX(3px);
+}
+
+.mi-icon-spin > svg {
+  transition: transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mi-icon-spin:hover > svg {
+  transform: rotate(-12deg) scale(1.08);
+}
+
+.mi-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.mi-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.28) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 700ms ease;
+  pointer-events: none;
+}
+.mi-shine:hover::after {
+  transform: translateX(120%);
+}
+
+.mi-pop {
+  display: inline-block;
+  animation: mi-pop 280ms cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+@keyframes mi-pop {
+  from {
+    transform: scale(0.55);
+    opacity: 0.3;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.mi-fade-up {
+  animation: mi-fade-up 600ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: var(--mi-delay, 0ms);
+}
+@keyframes mi-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.mi-slide-up {
+  animation: mi-slide-up 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes mi-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .mi-reveal {
+    animation: mi-fade-up linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mi-press,
+  .mi-lift,
+  .mi-pop,
+  .mi-fade-up,
+  .mi-slide-up,
+  .mi-reveal,
+  .mi-arrow > svg:last-child,
+  .mi-icon-spin > svg,
+  .mi-shine::after {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
   }
 }

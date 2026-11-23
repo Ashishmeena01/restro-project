@@ -1,11 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import {
-  TrendingUp,
-  Flame,
-  UtensilsCrossed,
-} from 'lucide-react';
+import { TrendUp as TrendingUp, Fire as Flame, ForkKnife as UtensilsCrossed } from '@phosphor-icons/react';
 import { formatPaise } from '@/lib/utils';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
@@ -77,7 +73,7 @@ export default function AdminBestSellersPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="font-display text-2xl sm:text-3xl font-semibold text-slate-900">
             {isHindi ? 'सर्वाधिक बिकने वाले व्यंजन (Best Sellers)' : 'Best-Selling Products'}
           </h1>
           <p className="text-xs text-slate-500 mt-1">
@@ -238,7 +234,7 @@ export default function AdminBestSellersPage() {
       ) : (
         <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-6 space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h2 className="font-bold text-sm text-slate-900">
+            <h2 className="font-display text-base font-semibold text-slate-900">
               {isHindi
                 ? `${months.find((m) => m.num === selectedMonth)?.name} ${selectedYear} के शीर्ष ${limit} पसंदीदा व्यंजन`
                 : `Top ${limit} Delicacies for ${months.find((m) => m.num === selectedMonth)?.name} ${selectedYear}`}

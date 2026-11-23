@@ -3,7 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { ArrowLeft, Printer, Download, Share2, ShieldCheck, Check } from 'lucide-react';
+import {
+  ArrowLeft,
+  Printer,
+  DownloadSimple as Download,
+  ShareNetwork as Share2,
+  ShieldCheck,
+  Check,
+} from '@phosphor-icons/react';
 import { jsPDF } from 'jspdf';
 import { formatPaise, formatDate } from '@/lib/utils';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
@@ -99,7 +106,7 @@ export default function ReceiptPage() {
 
     doc.setFont('helvetica', 'normal');
     parsed.items.forEach((item: any) => {
-      doc.text(item.name.substring(0, 20), 5, y);
+      doc.text((item.productName ?? item.name ?? "").substring(0, 20), 5, y);
       doc.text(String(item.quantity), 45, y, { align: 'center' });
       doc.text(formatPaise(item.totalPrice), 75, y, { align: 'right' });
       y += 4;
@@ -284,7 +291,7 @@ export default function ReceiptPage() {
               <div key={idx} className="py-2 flex items-center justify-between text-xs">
                 <div className="flex-1 pr-2">
                   <p className="font-semibold text-slate-900">
-                    {translateDish(item.name)}
+                    {translateDish(item.productName ?? item.name)}
                   </p>
                   <p className="text-[10px] text-slate-400">{formatPaise(item.unitPrice)} each</p>
                 </div>

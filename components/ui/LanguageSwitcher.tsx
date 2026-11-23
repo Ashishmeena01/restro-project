@@ -1,12 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Languages } from 'lucide-react';
+import { Translate as Languages } from '@phosphor-icons/react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface LanguageSwitcherProps {
   className?: string;
-  variant?: 'pill' | 'compact' | 'minimal';
+  variant?: 'pill' | 'compact' | 'minimal' | 'dark';
 }
 
 export function LanguageSwitcher({ className = '', variant = 'pill' }: LanguageSwitcherProps) {
@@ -21,6 +21,20 @@ export function LanguageSwitcher({ className = '', variant = 'pill' }: LanguageS
         aria-label="Switch Language / भाषा बदलें"
       >
         <Languages className="w-3.5 h-3.5 text-emerald-600" />
+        <span>{language === 'hi' ? 'English' : 'हिंदी'}</span>
+      </button>
+    );
+  }
+
+  if (variant === 'dark') {
+    return (
+      <button
+        type="button"
+        onClick={() => setLanguage(language === 'hi' ? 'en' : 'hi')}
+        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-amber-400/30 bg-white/5 hover:bg-white/15 text-xs font-semibold text-amber-50 transition-all ${className}`}
+        aria-label="Switch Language / भाषा बदलें"
+      >
+        <Languages className="w-3.5 h-3.5 text-amber-300" />
         <span>{language === 'hi' ? 'English' : 'हिंदी'}</span>
       </button>
     );

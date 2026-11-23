@@ -84,10 +84,12 @@ export async function createOrder(input: CreateOrderInput) {
   // 3. Resolve table if tableNumber provided
   let tableId: string | null = null;
   if (input.tableNumber) {
+    const raw = input.tableNumber.trim();
+    const candidates = /^\d+$/.test(raw) ? [raw, `Table ${raw}`, `T-${raw.padStart(2, '0')}`] : [raw];
     const table = await prisma.restaurantTable.findFirst({
       where: {
         businessId: business.id,
-        tableNumber: input.tableNumber.trim(),
+        OR: candidates.map((tableNumber) => ({ tableNumber: { equals: tableNumber, mode: 'insensitive' as const } })),
         isActive: true,
       },
     });

@@ -28,7 +28,7 @@ export function AdminPaymentsClient({ payments }: { payments: PaymentItem[] }) {
     <div className="space-y-6">
       {/* Top Header */}
       <div className="border-b border-slate-200 pb-5">
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+        <h1 className="font-display text-2xl sm:text-3xl font-semibold text-slate-900">
           {isHindi ? 'भुगतान बही (Payment Ledger)' : 'Payment Transactions'}
         </h1>
         <p className="text-xs text-slate-500 mt-1">
@@ -41,7 +41,7 @@ export function AdminPaymentsClient({ payments }: { payments: PaymentItem[] }) {
       {/* Payments Table */}
       <Card className="overflow-hidden rounded-3xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[640px] text-left text-xs">
             <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-100">
               <tr>
                 <th className="px-5 py-3">{isHindi ? 'लेनदेन समय' : 'Transaction Time'}</th>

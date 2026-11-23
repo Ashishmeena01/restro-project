@@ -3,14 +3,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   Plus,
-  Search,
-  Edit2,
-  Trash2,
+  MagnifyingGlass as Search,
+  PencilSimple as Edit2,
+  Trash as Trash2,
   Check,
   X,
-  AlertCircle,
-  UtensilsCrossed,
-} from 'lucide-react';
+  WarningCircle as AlertCircle,
+  ForkKnife as UtensilsCrossed,
+} from '@phosphor-icons/react';
 import { formatPaise, rupeesToPaise } from '@/lib/utils';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
@@ -217,7 +217,7 @@ export default function AdminProductsPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="font-display text-2xl sm:text-3xl font-semibold text-slate-900">
             {isHindi ? 'व्यंजन प्रबंधन (Menu Items)' : 'Product Management'}
           </h1>
           <p className="text-xs text-slate-500 mt-1">
@@ -283,7 +283,7 @@ export default function AdminProductsPage() {
       ) : (
         <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full min-w-[640px] text-left text-xs">
               <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-100">
                 <tr>
                   <th className="px-5 py-3">{isHindi ? 'व्यंजन का नाम' : 'Product Name'}</th>

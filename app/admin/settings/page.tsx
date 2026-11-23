@@ -1,7 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Save, CheckCircle2, AlertCircle, ShieldCheck, CreditCard, Store } from 'lucide-react';
+import {
+  FloppyDisk as Save,
+  CheckCircle as CheckCircle2,
+  WarningCircle as AlertCircle,
+  ShieldCheck,
+  CreditCard,
+  Storefront as Store,
+} from '@phosphor-icons/react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function AdminSettingsPage() {
@@ -101,7 +108,7 @@ export default function AdminSettingsPage() {
     <div className="space-y-6 max-w-4xl">
       {/* Top Header */}
       <div className="border-b border-slate-200 pb-5">
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+        <h1 className="font-display text-2xl sm:text-3xl font-semibold text-slate-900">
           {isHindi ? 'व्यापार सेटिंग्स (Business Settings)' : 'Business Settings'}
         </h1>
         <p className="text-xs text-slate-500 mt-1">
@@ -130,7 +137,7 @@ export default function AdminSettingsPage() {
         <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <Store className="w-4 h-4 text-emerald-600" />
-            <h2 className="font-bold text-sm text-slate-900">
+            <h2 className="font-display text-base font-semibold text-slate-900">
               {isHindi ? 'रेस्टोरेंट ब्रांडिंग और संपर्क' : 'Restaurant Branding & Contact'}
             </h2>
           </div>
@@ -233,7 +240,7 @@ export default function AdminSettingsPage() {
         <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <h2 className="font-bold text-sm text-slate-900">
+            <h2 className="font-display text-base font-semibold text-slate-900">
               {isHindi ? 'कर सेटिंग्स और डिजिटल रसीद' : 'Tax Settings & Digital Receipts'}
             </h2>
           </div>
@@ -288,7 +295,7 @@ export default function AdminSettingsPage() {
         <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <CreditCard className="w-4 h-4 text-emerald-600" />
-            <h2 className="font-bold text-sm text-slate-900">
+            <h2 className="font-display text-base font-semibold text-slate-900">
               {isHindi ? 'पेमेंट गेटवे विन्यास (Razorpay)' : 'Payment Gateway Configuration'}
             </h2>
           </div>

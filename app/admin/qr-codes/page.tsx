@@ -1,7 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Download, Printer, Plus, ExternalLink, X, AlertCircle } from 'lucide-react';
+import {
+  DownloadSimple as Download,
+  Printer,
+  Plus,
+  ArrowSquareOut as ExternalLink,
+  X,
+  WarningCircle as AlertCircle,
+} from '@phosphor-icons/react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function AdminQrCodesPage() {
@@ -116,7 +123,7 @@ export default function AdminQrCodesPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="font-display text-2xl sm:text-3xl font-semibold text-slate-900">
             {isHindi ? 'क्यूआर कोड प्रबंधन (QR Codes)' : 'QR Code Management'}
           </h1>
           <p className="text-xs text-slate-500 mt-1">

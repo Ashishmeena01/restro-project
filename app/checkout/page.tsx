@@ -5,16 +5,16 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   ArrowLeft,
-  Trash2,
+  Trash as Trash2,
   Plus,
   Minus,
   CreditCard,
-  Banknote,
+  Money as Banknote,
   ShieldCheck,
-  AlertCircle,
-  UtensilsCrossed,
-  FlaskConical,
-} from 'lucide-react';
+  WarningCircle as AlertCircle,
+  ForkKnife as UtensilsCrossed,
+  Flask as FlaskConical,
+} from '@phosphor-icons/react';
 import { useCart } from '@/components/cart/CartContext';
 import { formatPaise } from '@/lib/utils';
 import { Alert } from '@/components/ui/alert';
@@ -42,23 +42,38 @@ export default function CheckoutPage() {
   const [notes, setNotes] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'ONLINE_RAZORPAY' | 'CASH' | 'TEST'>('ONLINE_RAZORPAY');
   const [tableInput, setTableInput] = useState(tableNumber || 'Table 1');
+  const [tableEdited, setTableEdited] = useState(false);
+  const [placedOrder, setPlacedOrder] = useState(false);
+
+  if (tableNumber && !tableEdited && tableInput !== tableNumber) {
+    setTableInput(tableNumber);
+  }
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  if (placedOrder) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 text-center">
+        <div className="w-14 h-14 rounded-full border-4 border-emerald-100 border-t-emerald-600 animate-spin mb-4" />
+        <p className="font-display text-xl text-slate-900">{isHindi ? 'आपका ऑर्डर तैयार हो रहा है…' : 'Placing your order…'}</p>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 text-center">
-        <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-4">
+        <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 mb-4">
           <UtensilsCrossed className="w-8 h-8" />
         </div>
-        <h2 className="font-bold text-xl text-slate-900">{t('cart.empty_title')}</h2>
+        <h2 className="font-display text-2xl text-slate-900">{t('cart.empty_title')}</h2>
         <p className="text-xs text-slate-500 mt-1 max-w-xs leading-relaxed">
           {t('cart.empty_desc')}
         </p>
         <div className="mt-6 flex flex-col sm:flex-row items-center gap-3">
           <Link
             href="/menu"
-            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl font-medium text-sm transition-all shadow-sm shadow-emerald-200"
+            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-full font-semibold text-sm transition-all shadow-sm shadow-emerald-200"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>{t('cart.browse_menu')}</span>
@@ -111,8 +126,9 @@ export default function CheckoutPage() {
 
       // 2. If Cash on Counter payment:
       if (paymentMethod === 'CASH') {
-        clearCart();
+        setPlacedOrder(true);
         router.push(`/order/${orderId}?status=confirmed&method=cash`);
+        clearCart();
         return;
       }
 
@@ -126,8 +142,9 @@ export default function CheckoutPage() {
         if (!testRes.ok || !testData.success) {
           throw new Error(testData.error || 'Failed to complete test payment');
         }
-        clearCart();
+        setPlacedOrder(true);
         router.push(`/receipt/${orderId}`);
+        clearCart();
         return;
       }
 
@@ -174,8 +191,9 @@ export default function CheckoutPage() {
 
               const verifyData = await verifyRes.json();
               if (verifyData.success) {
-                clearCart();
+                setPlacedOrder(true);
                 router.push(`/receipt/${orderId}`);
+                clearCart();
               } else {
                 setErrorMessage(verifyData.error || 'Payment verification failed');
               }
@@ -194,8 +212,9 @@ export default function CheckoutPage() {
         rzpInstance.open();
       } else {
         // Fallback for development/testing if checkout script is unavailable
-        clearCart();
+        setPlacedOrder(true);
         router.push(`/order/${orderId}?status=confirmed&method=online`);
+        clearCart();
       }
     } catch (err: any) {
       console.error(err);
@@ -207,25 +226,25 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-16">
       {/* Top Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-20">
-        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div className="bg-slate-950 text-amber-50 border-b border-amber-900/40 sticky top-0 z-20">
+        <div className="max-w-xl mx-auto px-3 sm:px-4 h-14 flex items-center justify-between gap-2">
           <Link
             href="/menu"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-100/80 hover:text-white shrink-0"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>{t('checkout.back_to_menu')}</span>
           </Link>
-          <h1 className="font-bold text-xs sm:text-sm text-slate-900">
+          <h1 className="font-display text-sm sm:text-lg text-amber-50 truncate">
             {t('checkout.page_title')}
           </h1>
           <div className="flex items-center gap-2">
-            <LanguageSwitcher variant="compact" />
+            <LanguageSwitcher variant="dark" />
           </div>
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-6">
+      <div className="max-w-xl mx-auto px-3 sm:px-4 py-5">
         {errorMessage && (
           <Alert variant="destructive" className="mb-4 flex items-start gap-2.5 p-3.5 text-xs">
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
@@ -233,11 +252,11 @@ export default function CheckoutPage() {
           </Alert>
         )}
 
-        <form onSubmit={handleCheckout} className="space-y-6">
+        <form onSubmit={handleCheckout} className="space-y-4">
           {/* 1. Itemized Cart Summary */}
-          <Card className="checkout-panel space-y-4 p-5">
+          <Card className="checkout-panel mi-fade-up space-y-3 rounded-2xl p-4 sm:p-5">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-bold">{t('checkout.order_summary')}</CardTitle>
+              <CardTitle className="font-display text-base font-semibold">{t('checkout.order_summary')}</CardTitle>
               <Button
                 type="button"
                 variant="ghost"
@@ -251,69 +270,64 @@ export default function CheckoutPage() {
 
             <div className="divide-y divide-slate-100">
               {items.map((item) => (
-                <div key={item.productId} className="py-3 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
-                      {item.imageUrl ? (
-                        <img
-                          src={item.imageUrl}
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <UtensilsCrossed className="w-4 h-4 text-slate-300" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="font-semibold text-sm text-slate-900 truncate">
-                        {translateDish(item.name)}
-                      </p>
-                      <p className="text-xs text-slate-400">
-                        {formatPaise(item.price)}
-                      </p>
-                    </div>
+                <div key={item.productId} className="py-3 flex items-start gap-3">
+                  <div className="w-14 h-14 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
+                    {item.imageUrl ? (
+                      <img
+                        src={item.imageUrl}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <UtensilsCrossed className="w-4 h-4 text-slate-300" />
+                      </div>
+                    )}
                   </div>
 
-                  {/* Quantity selector */}
-                  <div className="flex items-center gap-2">
-                    <div className="inline-flex items-center rounded-lg bg-slate-100 border border-slate-200">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                        className="p-1 hover:bg-slate-200 rounded-l-lg text-slate-600 cursor-pointer"
-                      >
-                        <Minus className="w-3.5 h-3.5" />
-                      </Button>
-                      <span className="px-2 text-xs font-bold text-slate-800">{item.quantity}</span>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                        className="p-1 hover:bg-slate-200 rounded-r-lg text-slate-600 cursor-pointer"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                      </Button>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-display text-[15px] leading-snug text-slate-900 line-clamp-2">
+                        {translateDish(item.name)}
+                      </p>
+                      <span className="font-semibold text-sm text-slate-900 shrink-0">
+                        {formatPaise(item.price * item.quantity)}
+                      </span>
                     </div>
 
-                    <span className="font-bold text-sm text-slate-900 w-16 text-right">
-                      {formatPaise(item.price * item.quantity)}
-                    </span>
-
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeItem(item.productId)}
-                      className="p-1 text-slate-300 hover:text-rose-600 transition-colors cursor-pointer"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                    <div className="mt-1.5 flex items-center justify-between gap-2">
+                      <span className="text-xs text-slate-500">{formatPaise(item.price)}</span>
+                      <div className="flex items-center gap-1">
+                        <div className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 text-emerald-800">
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                            aria-label="Decrease quantity"
+                            className="mi-press w-7 h-7 inline-flex items-center justify-center rounded-full hover:bg-emerald-100 cursor-pointer"
+                          >
+                            <Minus className="w-3.5 h-3.5" />
+                          </button>
+                          <span key={item.quantity} className="mi-pop min-w-5 text-center text-xs font-bold">{item.quantity}</span>
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                            aria-label="Increase quantity"
+                            className="mi-press w-7 h-7 inline-flex items-center justify-center rounded-full hover:bg-emerald-100 cursor-pointer"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeItem(item.productId)}
+                          aria-label="Remove item"
+                          className="mi-press w-7 h-7 inline-flex items-center justify-center rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -337,10 +351,10 @@ export default function CheckoutPage() {
           </Card>
 
           {/* 2. Customer & Table Details */}
-          <Card className="checkout-panel space-y-4 p-5">
-            <CardTitle className="text-sm font-bold">{t('checkout.customer_details')}</CardTitle>
+          <Card className="checkout-panel mi-fade-up space-y-3 rounded-2xl p-4 sm:p-5" style={{ '--mi-delay': '80ms' } as React.CSSProperties}>
+            <CardTitle className="font-display text-base font-semibold">{t('checkout.customer_details')}</CardTitle>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <Label htmlFor="table-number" className="mb-1 block text-xs font-semibold text-slate-700">
                   {t('checkout.table_number')} *
@@ -352,7 +366,10 @@ export default function CheckoutPage() {
                     type="text"
                     required
                     value={tableInput}
-                    onChange={(e) => setTableInput(e.target.value)}
+                    onChange={(e) => {
+                      setTableEdited(true);
+                      setTableInput(e.target.value);
+                    }}
                     placeholder={t('checkout.table_placeholder')}
                     className="payment-input h-10 rounded-xl bg-slate-50 pl-9 pr-3 text-xs focus-visible:ring-emerald-500"
                   />
@@ -406,10 +423,10 @@ export default function CheckoutPage() {
           </Card>
 
           {/* 3. Payment Method Choice */}
-          <Card className="checkout-panel space-y-3 p-5">
-            <CardTitle className="text-sm font-bold">{t('checkout.payment_method')}</CardTitle>
+          <Card className="checkout-panel mi-fade-up space-y-3 rounded-2xl p-4 sm:p-5" style={{ '--mi-delay': '160ms' } as React.CSSProperties}>
+            <CardTitle className="font-display text-base font-semibold">{t('checkout.payment_method')}</CardTitle>
 
-            <RadioGroup className="sm:grid-cols-2" aria-label="Select payment method">
+            <RadioGroup aria-label="Select payment method">
               {/* Online Razorpay */}
               <label
                 data-selected={paymentMethod === 'ONLINE_RAZORPAY'}
@@ -419,8 +436,8 @@ export default function CheckoutPage() {
                     : 'border-slate-200 hover:border-slate-300'
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-emerald-100 text-emerald-700">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="p-2 rounded-lg shrink-0 bg-emerald-100 text-emerald-700">
                     <CreditCard className="w-5 h-5" />
                   </div>
                   <div>
@@ -446,8 +463,8 @@ export default function CheckoutPage() {
                     : 'border-slate-200 hover:border-slate-300'
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-amber-100 text-amber-700">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="p-2 rounded-lg shrink-0 bg-amber-100 text-amber-700">
                     <Banknote className="w-5 h-5" />
                   </div>
                   <div>
@@ -469,12 +486,12 @@ export default function CheckoutPage() {
                   data-selected={paymentMethod === 'TEST'}
                   className={`payment-method-card p-3.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
                     paymentMethod === 'TEST'
-                      ? 'border-sky-600 bg-sky-50 text-sky-950 shadow-xs'
+                      ? 'border-emerald-600 bg-emerald-50/50 text-emerald-950 shadow-xs'
                       : 'border-slate-200 hover:border-slate-300'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-sky-100 text-sky-700">
+                    <div className="p-2 rounded-lg bg-slate-100 text-slate-700">
                       <FlaskConical className="w-5 h-5" />
                     </div>
                     <div>
@@ -487,7 +504,7 @@ export default function CheckoutPage() {
                     value="TEST"
                     checked={paymentMethod === 'TEST'}
                     onChange={() => setPaymentMethod('TEST')}
-                    className="accent-sky-700"
+                    className="accent-emerald-700"
                   />
                 </label>
               )}
@@ -498,7 +515,7 @@ export default function CheckoutPage() {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="neon-checkout-button w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-2xl font-bold text-base shadow-lg shadow-emerald-200 hover:shadow-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+            className="neon-checkout-button mi-press mi-shine w-full h-auto bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-full font-semibold text-sm sm:text-base whitespace-normal shadow-lg shadow-emerald-200 hover:shadow-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
           >
             {isSubmitting ? (
               <span className="inline-flex items-center gap-2">
@@ -516,8 +533,8 @@ export default function CheckoutPage() {
             )}
           </Button>
 
-          <p className="text-center text-[11px] text-slate-400 flex items-center justify-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+          <p className="text-center text-[11px] text-slate-400 flex items-start sm:items-center justify-center gap-1.5 px-2">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
             <span>
               {isHindi
                 ? 'सुरक्षित 256-बिट एन्क्रिप्टेड चेकआउट • कोई छुपा हुआ शुल्क नहीं'

@@ -3,7 +3,13 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ShieldCheck, Lock, Mail, ArrowRight, AlertCircle } from 'lucide-react';
+import {
+  ShieldCheck,
+  Lock,
+  Envelope as Mail,
+  ArrowRight,
+  WarningCircle as AlertCircle,
+} from '@phosphor-icons/react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
@@ -51,7 +57,7 @@ export default function AdminLoginPage() {
           <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-bold text-xl mx-auto mb-3 shadow-lg shadow-emerald-900/50">
             व
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">
+          <h1 className="font-display text-3xl font-semibold text-white">
             {isHindi ? 'व्यवस्थापक पोर्टल लॉगिन' : 'Business Admin Portal'}
           </h1>
           <p className="text-xs text-slate-400 mt-1">
