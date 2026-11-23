@@ -42,8 +42,23 @@ export default function CheckoutPage() {
   const [notes, setNotes] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'ONLINE_RAZORPAY' | 'CASH' | 'TEST'>('ONLINE_RAZORPAY');
   const [tableInput, setTableInput] = useState(tableNumber || 'Table 1');
+  const [tableEdited, setTableEdited] = useState(false);
+  const [placedOrder, setPlacedOrder] = useState(false);
+
+  if (tableNumber && !tableEdited && tableInput !== tableNumber) {
+    setTableInput(tableNumber);
+  }
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  if (placedOrder) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 text-center">
+        <div className="w-14 h-14 rounded-full border-4 border-emerald-100 border-t-emerald-600 animate-spin mb-4" />
+        <p className="font-display text-xl text-slate-900">{isHindi ? 'आपका ऑर्डर तैयार हो रहा है…' : 'Placing your order…'}</p>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -111,8 +126,9 @@ export default function CheckoutPage() {
 
       // 2. If Cash on Counter payment:
       if (paymentMethod === 'CASH') {
-        clearCart();
+        setPlacedOrder(true);
         router.push(`/order/${orderId}?status=confirmed&method=cash`);
+        clearCart();
         return;
       }
 
@@ -126,8 +142,9 @@ export default function CheckoutPage() {
         if (!testRes.ok || !testData.success) {
           throw new Error(testData.error || 'Failed to complete test payment');
         }
-        clearCart();
+        setPlacedOrder(true);
         router.push(`/receipt/${orderId}`);
+        clearCart();
         return;
       }
 
@@ -174,8 +191,9 @@ export default function CheckoutPage() {
 
               const verifyData = await verifyRes.json();
               if (verifyData.success) {
-                clearCart();
+                setPlacedOrder(true);
                 router.push(`/receipt/${orderId}`);
+                clearCart();
               } else {
                 setErrorMessage(verifyData.error || 'Payment verification failed');
               }
@@ -194,8 +212,9 @@ export default function CheckoutPage() {
         rzpInstance.open();
       } else {
         // Fallback for development/testing if checkout script is unavailable
-        clearCart();
+        setPlacedOrder(true);
         router.push(`/order/${orderId}?status=confirmed&method=online`);
+        clearCart();
       }
     } catch (err: any) {
       console.error(err);
@@ -347,7 +366,10 @@ export default function CheckoutPage() {
                     type="text"
                     required
                     value={tableInput}
-                    onChange={(e) => setTableInput(e.target.value)}
+                    onChange={(e) => {
+                      setTableEdited(true);
+                      setTableInput(e.target.value);
+                    }}
                     placeholder={t('checkout.table_placeholder')}
                     className="payment-input h-10 rounded-xl bg-slate-50 pl-9 pr-3 text-xs focus-visible:ring-emerald-500"
                   />
