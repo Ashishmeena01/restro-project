@@ -141,7 +141,7 @@ export default function AdminCategoriesPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="font-display text-2xl sm:text-3xl font-semibold text-slate-900">
             {isHindi ? 'श्रेणी प्रबंधन (Menu Categories)' : 'Category Management'}
           </h1>
           <p className="text-xs text-slate-500 mt-1">
@@ -179,8 +179,8 @@ export default function AdminCategoriesPage() {
           </button>
         </div>
       ) : (
-        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
-          <table className="w-full text-left text-xs">
+        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-x-auto">
+          <table className="w-full min-w-[640px] text-left text-xs">
             <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-100">
               <tr>
                 <th className="px-5 py-3">{isHindi ? 'श्रेणी का नाम' : 'Category Name'}</th>

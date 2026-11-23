@@ -29,7 +29,7 @@ export function AdminReceiptsClient({ receipts }: { receipts: ReceiptItem[] }) {
     <div className="space-y-6">
       {/* Top Header */}
       <div className="border-b border-slate-200 pb-5">
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+        <h1 className="font-display text-2xl sm:text-3xl font-semibold text-slate-900">
           {isHindi ? 'रसीद अभिलेखागार (Receipts Archive)' : 'Receipts Archive'}
         </h1>
         <p className="text-xs text-slate-500 mt-1">
@@ -42,7 +42,7 @@ export function AdminReceiptsClient({ receipts }: { receipts: ReceiptItem[] }) {
       {/* Receipts Table */}
       <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[640px] text-left text-xs">
             <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-100">
               <tr>
                 <th className="px-5 py-3">{isHindi ? 'रसीद सं.' : 'Receipt #'}</th>

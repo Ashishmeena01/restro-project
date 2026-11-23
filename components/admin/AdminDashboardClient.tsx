@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import {
   IndianRupee,
-  ShoppingBag,
+  Soup,
   TrendingUp,
   Clock,
   Sparkles,
@@ -51,7 +51,7 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="font-display text-2xl sm:text-3xl font-semibold text-slate-900">
             {isHindi ? 'व्यापार डैशबोर्ड सारांश' : 'Business Overview'}
           </h1>
           <p className="text-xs text-slate-500 mt-1">
@@ -61,7 +61,7 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2.5">
           <Link
             href="/admin/orders"
             className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-xs transition-all"
@@ -80,7 +80,7 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
       </div>
 
       {/* Metric Cards Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Today's Revenue */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
@@ -92,7 +92,7 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
             </div>
           </div>
           <div className="mt-3">
-            <p className="text-2xl font-extrabold text-slate-900">
+            <p className="font-display text-2xl sm:text-3xl font-semibold text-slate-900">
               {formatPaise(metrics.todayRevenue)}
             </p>
             <p className="text-[11px] text-emerald-600 font-medium mt-1 flex items-center gap-1">
@@ -111,12 +111,12 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
             <span className="text-xs font-semibold text-slate-500">
               {isHindi ? 'आज बेची गई प्लेटें/इकाइयाँ' : 'Units Sold Today'}
             </span>
-            <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
-              <ShoppingBag className="w-4 h-4" />
+            <div className="p-2 rounded-lg bg-amber-50 text-amber-700">
+              <Soup className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <p className="text-2xl font-extrabold text-slate-900">
+            <p className="font-display text-2xl sm:text-3xl font-semibold text-slate-900">
               {metrics.totalUnitsSoldToday}
             </p>
             <p className="text-[11px] text-slate-400 mt-1">
@@ -131,12 +131,12 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
             <span className="text-xs font-semibold text-slate-500">
               {isHindi ? 'औसत आर्डर मूल्य (AOV)' : 'Avg Order Value (AOV)'}
             </span>
-            <div className="p-2 rounded-lg bg-purple-50 text-purple-600">
+            <div className="p-2 rounded-lg bg-rose-50 text-rose-700">
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <p className="text-2xl font-extrabold text-slate-900">
+            <p className="font-display text-2xl sm:text-3xl font-semibold text-slate-900">
               {formatPaise(metrics.avgOrderValue)}
             </p>
             <p className="text-[11px] text-slate-400 mt-1">
@@ -156,7 +156,7 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
             </div>
           </div>
           <div className="mt-3">
-            <p className="text-2xl font-extrabold text-slate-900">
+            <p className="font-display text-2xl sm:text-3xl font-semibold text-slate-900">
               {metrics.pendingOrdersCount}
             </p>
             <p className="text-[11px] text-amber-700 font-medium mt-1">
@@ -168,7 +168,7 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
 
       {/* Best-Seller Highlight Banner */}
       {metrics.bestSellerToday && (
-        <div className="bg-gradient-to-r from-emerald-500/10 via-amber-500/10 to-transparent p-4 rounded-2xl border border-emerald-200/60 flex items-center justify-between gap-4">
+        <div className="bg-gradient-to-r from-emerald-500/10 via-amber-500/10 to-transparent p-4 rounded-2xl border border-emerald-200/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-amber-500 text-white rounded-xl shadow-xs">
               <Sparkles className="w-5 h-5" />
@@ -199,10 +199,10 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
       )}
 
       {/* Revenue Trend Chart */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+      <div className="bg-white p-4 sm:p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-bold text-sm text-slate-900">
+            <h2 className="font-display text-base font-semibold text-slate-900">
               {isHindi ? 'साप्ताहिक राजस्व रुझान (₹)' : 'Weekly Revenue Trend (₹)'}
             </h2>
             <p className="text-xs text-slate-400">
@@ -219,9 +219,9 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
 
       {/* Recent Orders Table */}
       <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
-        <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+        <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between gap-3">
           <div>
-            <h2 className="font-bold text-sm text-slate-900">
+            <h2 className="font-display text-base font-semibold text-slate-900">
               {isHindi ? 'हाल के ग्राहक आर्डर' : 'Recent Customer Orders'}
             </h2>
             <p className="text-xs text-slate-400">
@@ -238,7 +238,7 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[640px] text-left text-xs">
             <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-100">
               <tr>
                 <th className="px-5 py-3">{isHindi ? 'आर्डर सं.' : 'Order #'}</th>
@@ -276,7 +276,7 @@ export function AdminDashboardClient({ businessName, metrics }: AdminDashboardCl
                         ord.paymentStatus === 'SUCCESS'
                           ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                           : ord.paymentStatus === 'REFUNDED'
-                          ? 'bg-purple-50 text-purple-700 border border-purple-200'
+                          ? 'bg-rose-50 text-rose-700 border border-rose-200'
                           : 'bg-amber-50 text-amber-700 border border-amber-200'
                       }`}
                     >

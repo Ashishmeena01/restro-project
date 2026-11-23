@@ -84,7 +84,7 @@ export default function AdminDailyReportsPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="font-display text-2xl sm:text-3xl font-semibold text-slate-900">
             {isHindi ? 'दैनिक बिक्री ऑडिट रिपोर्ट (Daily Reports)' : 'Daily Sales Reports'}
           </h1>
           <p className="text-xs text-slate-500 mt-1">
@@ -182,7 +182,7 @@ export default function AdminDailyReportsPage() {
 
           {/* Detailed Audit Table */}
           <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-6 space-y-4">
-            <h2 className="font-bold text-sm text-slate-900">
+            <h2 className="font-display text-base font-semibold text-slate-900">
               {isHindi
                 ? `संपूर्ण दैनिक ऑडिट विवरण (${report.date})`
                 : `Full Daily Audit Breakdown (${report.date})`}

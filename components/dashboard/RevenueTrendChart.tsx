@@ -38,23 +38,23 @@ export default function RevenueTrendChart({ data }: ChartProps) {
     <div className="w-full h-64 pt-2">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ecdfcc" />
           <XAxis
             dataKey="date"
             axisLine={false}
             tickLine={false}
-            tick={{ fontSize: 11, fill: '#64748b' }}
+            tick={{ fontSize: 11, fill: '#8a7560' }}
           />
           <YAxis
             axisLine={false}
             tickLine={false}
-            tick={{ fontSize: 11, fill: '#64748b' }}
+            tick={{ fontSize: 11, fill: '#8a7560' }}
             tickFormatter={(val) => `₹${val}`}
           />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltip />} cursor={{ fill: '#fff7ed' }} />
           <Bar
             dataKey="revenue"
-            fill="#000000"
+            fill="#c2410c"
             radius={[6, 6, 0, 0]}
             maxBarSize={48}
           />
