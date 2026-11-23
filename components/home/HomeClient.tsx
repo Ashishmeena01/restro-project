@@ -91,6 +91,7 @@ export function HomeClient({ business, previewProducts }: HomeClientProps) {
             <LanguageSwitcher variant="dark" />
             <Link
               href="/menu"
+              aria-label={t('home.order_now')}
               className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white px-3 sm:px-5 py-2 rounded-full font-semibold text-xs sm:text-sm transition-colors"
             >
               <UtensilsCrossed className="w-4 h-4" />
