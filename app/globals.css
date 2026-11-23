@@ -62,6 +62,7 @@ body {
 .payment-method-card {
   position: relative;
   isolation: isolate;
+  overflow: hidden;
   transition: transform 180ms ease, border-color 180ms ease, box-shadow 220ms ease, background-color 180ms ease;
 }
 
