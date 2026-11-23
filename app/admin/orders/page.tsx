@@ -186,8 +186,8 @@ export default function AdminOrdersPage() {
               >
                 {/* Header row */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <span className="font-extrabold text-sm text-slate-900">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                    <span className="font-display font-semibold text-base text-slate-900 whitespace-nowrap">
                       {order.orderNumber}
                     </span>
                     <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200">
