@@ -1,10 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import {
-  Calendar,
-  Download,
-} from 'lucide-react';
+import { CalendarBlank as Calendar, DownloadSimple as Download } from '@phosphor-icons/react';
 import { formatPaise } from '@/lib/utils';
 import { jsPDF } from 'jspdf';
 import { useLanguage } from '@/lib/i18n/LanguageContext';

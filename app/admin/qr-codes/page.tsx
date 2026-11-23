@@ -1,7 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Download, Printer, Plus, ExternalLink, X, AlertCircle } from 'lucide-react';
+import {
+  DownloadSimple as Download,
+  Printer,
+  Plus,
+  ArrowSquareOut as ExternalLink,
+  X,
+  WarningCircle as AlertCircle,
+} from '@phosphor-icons/react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function AdminQrCodesPage() {

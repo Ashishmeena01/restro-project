@@ -3,12 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
-  Search,
-  ReceiptText,
-  UtensilsCrossed,
-  RefreshCw,
-  Banknote,
-} from 'lucide-react';
+  MagnifyingGlass as Search,
+  Receipt as ReceiptText,
+  ForkKnife as UtensilsCrossed,
+  ArrowsClockwise as RefreshCw,
+  Money as Banknote,
+} from '@phosphor-icons/react';
 import { formatPaise, formatDate } from '@/lib/utils';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 

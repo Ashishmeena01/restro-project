@@ -3,14 +3,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   Plus,
-  Search,
-  Edit2,
-  Trash2,
+  MagnifyingGlass as Search,
+  PencilSimple as Edit2,
+  Trash as Trash2,
   Check,
   X,
-  AlertCircle,
-  UtensilsCrossed,
-} from 'lucide-react';
+  WarningCircle as AlertCircle,
+  ForkKnife as UtensilsCrossed,
+} from '@phosphor-icons/react';
 import { formatPaise, rupeesToPaise } from '@/lib/utils';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 

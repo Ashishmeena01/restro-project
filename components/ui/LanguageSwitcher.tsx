@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Languages } from 'lucide-react';
+import { Translate as Languages } from '@phosphor-icons/react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface LanguageSwitcherProps {

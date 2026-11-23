@@ -3,14 +3,14 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  IndianRupee,
-  Soup,
-  TrendingUp,
+  CurrencyInr as IndianRupee,
+  BowlSteam as Soup,
+  TrendUp as TrendingUp,
   Clock,
-  Sparkles,
+  Sparkle as Sparkles,
   ArrowRight,
   Plus,
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { formatPaise, formatDate } from '@/lib/utils';
 import RevenueTrendChart from '@/components/dashboard/RevenueTrendChart';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
