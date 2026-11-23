@@ -235,7 +235,7 @@ function MenuContent() {
                         <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                           <div>
                             <div className="flex items-baseline gap-2">
-                              <VegMark className="self-center" label={t('menu.veg')} />
+                              {product.isVeg && <VegMark className="self-center" label={t('menu.veg')} />}
                               <h3 className="font-display text-base sm:text-xl text-slate-900 leading-snug">
                                 {translateDish(product.name)}
                               </h3>
