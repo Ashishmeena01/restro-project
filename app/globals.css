@@ -178,13 +178,6 @@ body {
   background: linear-gradient(90deg, currentColor, transparent);
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  scrollbar-width: none;
-}
-
 /* Custom scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
