@@ -149,7 +149,7 @@ async function main() {
       price: 2000, // ₹20.00
       isVeg: true,
       isAvailable: true,
-      imageUrl: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80',
+      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Kachori_MA23.jpg/960px-Kachori_MA23.jpg',
     },
   });
 
@@ -162,7 +162,7 @@ async function main() {
       price: 1000, // ₹10.00
       isVeg: true,
       isAvailable: true,
-      imageUrl: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=600&q=80',
+      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Chai_In_Sakora.jpg',
     },
   });
 
@@ -175,7 +175,7 @@ async function main() {
       price: 2500, // ₹25.00
       isVeg: true,
       isAvailable: true,
-      imageUrl: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80',
+      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Indori_Poha%2C_New_Delhi.jpg/960px-Indori_Poha%2C_New_Delhi.jpg',
     },
   });
 
@@ -188,7 +188,7 @@ async function main() {
       price: 6000, // ₹60.00
       isVeg: true,
       isAvailable: true,
-      imageUrl: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=600&q=80',
+      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/86/Jalebi-Rabdi.jpg',
     },
   });
 
@@ -201,7 +201,7 @@ async function main() {
       price: 3500, // ₹35.00
       isVeg: true,
       isAvailable: true,
-      imageUrl: 'https://images.unsplash.com/photo-1626074353765-517a681e40be?auto=format&fit=crop&w=600&q=80',
+      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Lassi_1.jpg/960px-Lassi_1.jpg',
     },
   });
 
@@ -214,7 +214,7 @@ async function main() {
       price: 3000, // ₹30.00
       isVeg: true,
       isAvailable: true,
-      imageUrl: 'https://images.unsplash.com/photo-1605197154344-979dc5a54cf8?auto=format&fit=crop&w=600&q=80',
+      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Two_Gulab_Jamun_in_a_plate_01.jpg/960px-Two_Gulab_Jamun_in_a_plate_01.jpg',
     },
   });
 
