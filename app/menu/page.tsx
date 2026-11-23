@@ -8,6 +8,7 @@ import { useCart } from '@/components/cart/CartContext';
 import { formatPaise } from '@/lib/utils';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
+import { VegMark } from '@/components/ui/VegMark';
 
 interface ProductItem {
   id: string;
@@ -109,31 +110,26 @@ function MenuContent() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-28">
       {/* Header Bar */}
-      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200">
-        <div className="max-w-3xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-between gap-2">
-            <Link href="/" className="flex items-center gap-2 min-w-0">
-              <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shrink-0">
+      <div className="sticky top-0 z-30 shadow-sm">
+        <div className="bg-slate-950 text-amber-50 border-b border-amber-500/20">
+          <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+            <Link href="/" className="flex items-center gap-2.5 min-w-0">
+              <div className="w-9 h-9 rounded-full border-2 border-amber-400 text-amber-300 flex items-center justify-center font-display text-lg shrink-0">
                 व
               </div>
               <div className="min-w-0">
-                <h1 className="font-bold text-xs sm:text-base leading-tight text-slate-900 truncate">
-                  {displayName}
-                </h1>
-                <p className="text-[10px] sm:text-[11px] text-emerald-700 font-medium">
+                <h1 className="font-display text-sm sm:text-lg leading-tight truncate">{displayName}</h1>
+                <p className="text-[10px] sm:text-[11px] text-amber-400/90 tracking-wide">
                   {t('menu.header_title')}
                 </p>
               </div>
             </Link>
 
             <div className="flex items-center gap-2 shrink-0">
-              {/* Language Switcher */}
-              <LanguageSwitcher variant="pill" />
-
-              {/* Table Badge */}
+              <LanguageSwitcher variant="dark" />
               {(tableParam || tableNumber) && (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
-                  <UtensilsCrossed className="w-3.5 h-3.5 text-emerald-600" />
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-400/15 border border-amber-400/40 text-amber-200 text-xs font-semibold">
+                  <UtensilsCrossed className="w-3.5 h-3.5" />
                   <span>
                     {t('menu.table')} {tableParam || tableNumber}
                   </span>
@@ -141,50 +137,46 @@ function MenuContent() {
               )}
             </div>
           </div>
+        </div>
 
-          {/* Search Box */}
-          <div className="mt-3 relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder={t('menu.search_placeholder')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-100 hover:bg-slate-100/80 focus:bg-white pl-10 pr-4 py-2 rounded-xl text-xs sm:text-sm border border-transparent focus:border-emerald-500 focus:outline-none transition-all placeholder:text-slate-400"
-            />
-          </div>
+        <div className="bg-slate-50/95 backdrop-blur-md border-b border-slate-200">
+          <div className="max-w-3xl mx-auto px-4 py-3">
+            {/* Search Box */}
+            <div className="relative">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder={t('menu.search_placeholder')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-white pl-10 pr-4 py-2.5 rounded-full text-xs sm:text-sm border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none transition-all placeholder:text-slate-400"
+              />
+            </div>
 
-          {/* Horizontal Category Pill Tabs */}
-          <div className="mt-3 flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-            <button
-              onClick={() => setSelectedCategory('all')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all ${
-                selectedCategory === 'all'
-                  ? 'bg-slate-900 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              {t('menu.all_categories')}
-            </button>
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all ${
-                  selectedCategory === cat.id
-                    ? 'bg-emerald-600 text-white shadow-xs shadow-emerald-200'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                {translateCategory(cat.name)}
-              </button>
-            ))}
+            {/* Horizontal Category Tabs */}
+            <div className="mt-3 flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5">
+              {[{ id: 'all', label: t('menu.all_categories') }, ...categories.map((cat) => ({ id: cat.id, label: translateCategory(cat.name) }))].map(
+                ({ id, label }) => (
+                  <button
+                    key={id}
+                    onClick={() => setSelectedCategory(id)}
+                    className={`px-4 py-1.5 rounded-full text-xs font-semibold shrink-0 border transition-all cursor-pointer ${
+                      selectedCategory === id
+                        ? 'bg-emerald-600 border-emerald-600 text-white shadow-sm shadow-emerald-200'
+                        : 'bg-white border-slate-200 text-slate-600 hover:border-emerald-300 hover:text-emerald-700'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                )
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Menu Feed */}
-      <main className="max-w-3xl mx-auto px-4 py-6">
+      <main className="max-w-3xl mx-auto px-4 py-8">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20 text-slate-400">
             <div className="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mb-3"></div>
@@ -192,89 +184,31 @@ function MenuContent() {
           </div>
         ) : filteredCategories.length === 0 ? (
           <div className="bg-white rounded-2xl p-10 text-center border border-slate-200">
-            <p className="text-sm font-semibold text-slate-700">{t('menu.no_dishes')}</p>
+            <p className="font-display text-lg text-slate-700">{t('menu.no_dishes')}</p>
             <p className="text-xs text-slate-400 mt-1">{t('menu.try_another')}</p>
           </div>
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-12">
             {filteredCategories.map((cat) => (
-              <section key={cat.id} className="space-y-3">
-                <div className="border-b border-slate-200/80 pb-2">
-                  <h2 className="font-bold text-base text-slate-900 flex items-center gap-2">
+              <section key={cat.id} className="space-y-5">
+                <div className="text-center">
+                  <h2 className="ornament font-display text-2xl sm:text-3xl text-slate-900">
                     <span>{translateCategory(cat.name)}</span>
-                    <span className="text-xs text-slate-400 font-normal">({cat.products.length})</span>
                   </h2>
                   {cat.description && (
-                    <p className="text-xs text-slate-500 mt-0.5">{cat.description}</p>
+                    <p className="text-xs text-slate-500 mt-1.5 italic">{cat.description}</p>
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div className="grid grid-cols-1 gap-4">
                   {cat.products.map((product) => {
                     const cartQty = getItemQuantityInCart(product.id);
                     return (
                       <div
                         key={product.id}
-                        className="bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-xs flex gap-3 hover:border-emerald-200 transition-all"
+                        className="bg-white rounded-2xl p-3 sm:p-4 border border-slate-200 shadow-sm flex gap-4 hover:shadow-md hover:border-emerald-200 transition-all"
                       >
-                        <div className="flex-1 min-w-0 flex flex-col justify-between">
-                          <div>
-                            <div className="flex items-center justify-between mb-1.5 gap-2">
-                              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-                                {t('menu.veg')}
-                              </span>
-                              <span className="font-bold text-base text-slate-900 shrink-0">
-                                {formatPaise(product.price)}
-                              </span>
-                            </div>
-
-                            <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-snug">
-                              {translateDish(product.name)}
-                            </h3>
-                            {product.description && (
-                              <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
-                                {translateDescription(product.description)}
-                              </p>
-                            )}
-                          </div>
-
-                          <div className="mt-3 flex items-center justify-between gap-2">
-                            <span className="text-[11px] text-slate-400 font-medium">
-                              {cartQty > 0
-                                ? `${cartQty} ${t('menu.in_cart')}`
-                                : t('menu.hot_fresh')}
-                            </span>
-
-                            {cartQty === 0 ? (
-                              <button
-                                onClick={() => addItem(product)}
-                                className="inline-flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold border border-emerald-200 hover:border-emerald-600 transition-all cursor-pointer"
-                              >
-                                <Plus className="w-3.5 h-3.5" />
-                                <span>{t('menu.add_btn')}</span>
-                              </button>
-                            ) : (
-                              <div className="inline-flex items-center rounded-xl bg-emerald-600 text-white shadow-xs shadow-emerald-200">
-                                <button
-                                  onClick={() => updateQuantity(product.id, cartQty - 1)}
-                                  className="p-1.5 hover:bg-emerald-700 rounded-l-xl transition-colors cursor-pointer"
-                                >
-                                  <Minus className="w-3.5 h-3.5" />
-                                </button>
-                                <span className="px-2.5 text-xs font-bold">{cartQty}</span>
-                                <button
-                                  onClick={() => updateQuantity(product.id, cartQty + 1)}
-                                  className="p-1.5 hover:bg-emerald-700 rounded-r-xl transition-colors cursor-pointer"
-                                >
-                                  <Plus className="w-3.5 h-3.5" />
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-xl overflow-hidden bg-slate-100 relative">
+                        <div className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 rounded-xl overflow-hidden bg-slate-100 relative">
                           {product.imageUrl ? (
                             <img
                               src={product.imageUrl}
@@ -290,11 +224,63 @@ function MenuContent() {
                             />
                           ) : null}
                           <div
-                            className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-emerald-50 to-amber-50 ${
+                            className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-emerald-50 to-amber-100 ${
                               product.imageUrl ? 'hidden' : ''
                             }`}
                           >
                             <UtensilsCrossed className="w-8 h-8 text-emerald-300" />
+                          </div>
+                        </div>
+
+                        <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                          <div>
+                            <div className="flex items-baseline gap-2">
+                              <VegMark className="self-center" />
+                              <h3 className="font-display text-base sm:text-xl text-slate-900 leading-snug">
+                                {translateDish(product.name)}
+                              </h3>
+                              <span className="flex-1 border-b-2 border-dotted border-slate-300 translate-y-[-4px] min-w-4 hidden sm:block" />
+                              <span className="font-display text-base sm:text-xl text-emerald-700 shrink-0 ml-auto sm:ml-0">
+                                {formatPaise(product.price)}
+                              </span>
+                            </div>
+                            {product.description && (
+                              <p className="text-xs sm:text-sm text-slate-500 mt-1.5 line-clamp-2 leading-relaxed">
+                                {translateDescription(product.description)}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="mt-3 flex items-center justify-between gap-2">
+                            <span className="text-[11px] text-amber-700 font-medium italic">
+                              {cartQty > 0 ? `${cartQty} ${t('menu.in_cart')}` : t('menu.hot_fresh')}
+                            </span>
+
+                            {cartQty === 0 ? (
+                              <button
+                                onClick={() => addItem(product)}
+                                className="inline-flex items-center gap-1.5 bg-white hover:bg-emerald-600 text-emerald-700 hover:text-white px-4 py-1.5 rounded-full text-xs font-semibold border border-emerald-600 transition-all cursor-pointer"
+                              >
+                                <Plus className="w-3.5 h-3.5" />
+                                <span>{t('menu.add_btn')}</span>
+                              </button>
+                            ) : (
+                              <div className="inline-flex items-center rounded-full bg-emerald-600 text-white shadow-sm shadow-emerald-200">
+                                <button
+                                  onClick={() => updateQuantity(product.id, cartQty - 1)}
+                                  className="p-1.5 pl-2.5 hover:bg-emerald-700 rounded-l-full transition-colors cursor-pointer"
+                                >
+                                  <Minus className="w-3.5 h-3.5" />
+                                </button>
+                                <span className="px-2.5 text-xs font-bold">{cartQty}</span>
+                                <button
+                                  onClick={() => updateQuantity(product.id, cartQty + 1)}
+                                  className="p-1.5 pr-2.5 hover:bg-emerald-700 rounded-r-full transition-colors cursor-pointer"
+                                >
+                                  <Plus className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -312,21 +298,21 @@ function MenuContent() {
         <div className="fixed bottom-4 left-4 right-4 z-40 max-w-lg mx-auto">
           <Link
             href="/checkout"
-            className="flex items-center justify-between bg-slate-900 hover:bg-black text-white px-5 py-3.5 rounded-2xl shadow-xl shadow-slate-900/20 transition-all hover:scale-[1.01]"
+            className="flex items-center justify-between bg-slate-950 hover:bg-slate-900 text-white px-5 py-3.5 rounded-full shadow-xl shadow-slate-900/30 border border-amber-500/30 transition-all hover:scale-[1.01]"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-xs">
+              <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">
                 {totalItems}
               </div>
               <div>
-                <p className="text-xs text-slate-300">{t('menu.total_payable')}</p>
-                <p className="font-bold text-base leading-tight text-white">
+                <p className="text-[11px] text-amber-100/70">{t('menu.total_payable')}</p>
+                <p className="font-display text-lg leading-tight text-amber-50">
                   {formatPaise(subtotal + Math.round((subtotal * 5) / 100))}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 text-emerald-400 font-semibold text-sm">
+            <div className="flex items-center gap-2 text-amber-300 font-semibold text-sm">
               <span>{t('menu.view_cart')}</span>
               <ArrowRight className="w-4 h-4" />
             </div>
