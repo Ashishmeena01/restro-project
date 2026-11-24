@@ -11,7 +11,8 @@
     "db:generate": "node scripts/generate-prisma.js",
     "db:push": "prisma db push --schema=prisma/schema.prisma",
     "db:sqlite:push": "prisma db push --schema=prisma/schema.sqlite.prisma",
-    "db:seed": "node prisma/seed.js"
+    "db:seed": "node prisma/seed.js",
+    "db:kitchen-user": "node scripts/create-kitchen-user.js"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
