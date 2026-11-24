@@ -19,6 +19,7 @@ import {
   X,
   ArrowSquareOut as ExternalLink,
   Storefront as Store,
+  CookingPot,
 } from '@phosphor-icons/react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
@@ -37,6 +38,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const navItems = [
     { href: '/admin', label: t('admin.nav_overview'), icon: LayoutDashboard },
     { href: '/admin/orders', label: t('admin.nav_orders'), icon: ShoppingBag },
+    { href: '/kitchen', label: isHindi ? 'रसोई डिस्प्ले' : 'Kitchen Display', icon: CookingPot },
     { href: '/admin/products', label: t('admin.nav_products'), icon: UtensilsCrossed },
     { href: '/admin/categories', label: t('admin.nav_categories'), icon: Tags },
     { href: '/admin/payments', label: t('admin.nav_payments'), icon: CreditCard },
@@ -51,7 +53,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
       router.push('/admin/login');
-    } catch (e) {
+    } catch {
       router.push('/admin/login');
     }
   };
