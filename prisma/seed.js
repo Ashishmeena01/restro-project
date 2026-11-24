@@ -58,9 +58,10 @@ async function main() {
   });
   console.log('✅ Created Business Settings');
 
-  // 4. Create Users (Admin and Staff with hashed passwords)
+  // 4. Create Users (Admin, Counter Staff and Kitchen Staff with hashed passwords)
   const adminPasswordHash = await bcrypt.hash('admin123', 10);
   const staffPasswordHash = await bcrypt.hash('staff123', 10);
+  const kitchenPasswordHash = await bcrypt.hash('kitchen123', 10);
 
   const adminUser = await prisma.user.create({
     data: {
@@ -81,7 +82,17 @@ async function main() {
       role: 'STAFF',
     },
   });
-  console.log('✅ Created Users: admin@vrindavan.com (pass: admin123) and staff@vrindavan.com (pass: staff123)');
+
+  await prisma.user.create({
+    data: {
+      businessId: business.id,
+      name: 'Madan Lal (Kitchen Chef)',
+      email: 'kitchen@vrindavan.com',
+      passwordHash: kitchenPasswordHash,
+      role: 'KITCHEN',
+    },
+  });
+  console.log('✅ Created Users: admin@vrindavan.com (pass: admin123), staff@vrindavan.com (pass: staff123) and kitchen@vrindavan.com (pass: kitchen123)');
 
   // 5. Create Categories
   const catSnacks = await prisma.category.create({
