@@ -8,12 +8,14 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.AUTH_SECRET || 'vrindavan_super_secret_jwt_key_change_in_production_2026_xyz'
 );
 
+export type UserRole = 'ADMIN' | 'STAFF' | 'KITCHEN';
+
 export interface SessionPayload {
   userId: string;
   businessId: string;
   name: string;
   email: string;
-  role: 'ADMIN' | 'STAFF';
+  role: UserRole;
 }
 
 /**
@@ -76,7 +78,7 @@ export async function authenticateUser(email: string, passwordPlain: string) {
     businessId: user.businessId,
     name: user.name,
     email: user.email,
-    role: user.role as 'ADMIN' | 'STAFF',
+    role: user.role as UserRole,
   };
 
   const token = await signSessionToken(payload);
@@ -104,7 +106,7 @@ export async function logoutUser() {
 /**
  * Require admin or staff role; throws error or returns null if unauthorized
  */
-export async function requireAuth(allowedRoles: ('ADMIN' | 'STAFF')[] = ['ADMIN', 'STAFF']) {
+export async function requireAuth(allowedRoles: UserRole[] = ['ADMIN', 'STAFF']) {
   const session = await getCurrentSession();
   if (!session) {
     throw new Error('Unauthorized. Please log in.');
