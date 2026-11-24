@@ -306,14 +306,14 @@ function MenuContent() {
       </main>
 
       {/* Floating Sticky Cart Bar */}
-      {totalItems > 0 && (
+      {totalItems > 0 && (()=>console.log(totalItems)) && (
         <div className="mi-slide-up fixed bottom-4 left-4 right-4 z-40 max-w-lg mx-auto">
           <Link
             href="/checkout"
             className="group mi-press flex items-center justify-between bg-slate-950 hover:bg-slate-900 text-white px-5 py-3.5 rounded-full shadow-xl shadow-slate-900/30 border border-amber-500/30"
           >
             <div className="flex items-center gap-3">
-              <div key={totalItems} className="mi-pop w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">
+              <div key={totalItems} className=" w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs bg-blue-400 ">
                 {totalItems}
               </div>
               <div>
