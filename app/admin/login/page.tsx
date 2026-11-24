@@ -38,9 +38,15 @@ export default function AdminLoginPage() {
         throw new Error(data.error || (isHindi ? 'अमान्य क्रेडेंशियल्स' : 'Invalid credentials'));
       }
 
-      router.push('/admin');
-    } catch (err: any) {
-      setErrorMessage(err.message || (isHindi ? 'लॉगिन विफल रहा' : 'Login failed'));
+      router.push(data.user?.role === 'KITCHEN' ? '/kitchen' : '/admin');
+    } catch (err) {
+      setErrorMessage(
+        err instanceof Error
+          ? err.message
+          : isHindi
+            ? 'लॉगिन विफल रहा'
+            : 'Login failed'
+      );
       setIsSubmitting(false);
     }
   };
@@ -132,6 +138,7 @@ export default function AdminLoginPage() {
           <div className="space-y-1 font-mono text-[11px] bg-slate-900/60 p-3 rounded-xl border border-slate-700">
             <p>Admin: <span className="text-emerald-400">admin@vrindavan.com</span> / <span className="text-emerald-400">admin123</span></p>
             <p>Staff: <span className="text-slate-300">staff@vrindavan.com</span> / <span className="text-slate-300">staff123</span></p>
+            <p>Kitchen: <span className="text-amber-300">kitchen@vrindavan.com</span> / <span className="text-amber-300">kitchen123</span></p>
           </div>
         </div>
 
