@@ -10,9 +10,11 @@ export default async function OrderStatusPage({
 }: {
   params: Promise<{ orderId: string }>;
 }) {
+  console.log("on the server")
   const { orderId } = await params;
   let order = null;
-
+  console.log("order id:", orderId)
+  console.log("order id:", orderId)
   try {
     order = await getOrderById(orderId);
   } catch (e) {
